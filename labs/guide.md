@@ -59,7 +59,7 @@
     # Executa o comando ps -ef no container a partir da imagem bash:latest
     $ docker run bash:latest ps –ef
     $ docker ps -a
-    # Executar  um container co --rm, solicitando remoção apos o fim da execução
+    # Executar um container com --rm, solicitando remoção apos o fim da execução
     $ docker run --rm bash:latest ps –ef
     $ docker ps -a
     ```
@@ -139,7 +139,7 @@
 1. Criar um arquivo no host e verificar sua existência no container
 
     ```bash
-    # Criando um arquivo non /tmp do sistema host
+    # Criando um arquivo no /tmp do sistema host
     $ touch /tmp/hostfile.txt
     # Executar um container
     $ docker run -it bash
@@ -147,7 +147,7 @@
     bash-5.2$ ls /tmp
     ```
 
-2. Criar um arquivo no container e verificar sua existência no host
+2. Criar um arquivo no container e verificar sua não existência no host
 
     ```bash
     # Criar um arquivo no /tmp do container
@@ -157,3 +157,62 @@
     # Verificar a inexistência do arquivo containerfile.txt no nost
     $ ls /tmp
     ```
+3. Montando arquivos locais no container (bind Mount)
+   
+   ```bash
+   # Diretorio mydir no host
+   $ mkdir mydir
+   $ touch mydir/myhostfile.txt
+   # -v monta o diretorio mydir do host no /mydir do container
+   $ docker run –it --rm –v ./mydir:/mydir bash
+   # ls /mydir
+   # touch /mydir/mycontainerfile.txt
+   # exit
+   # Verifique que agora existe o arquivo no host
+   $ ls ./mydir
+   ```
+
+## LAB 4
+**Objetivo:** Utilizando rede no container
+1. Criando um container com uma imagem nginx. A imagem com o nome nginx puro, ira utilizar uma imagem do hub.docker.com, sem namespace e o tag será o default _latest_.
+   Parâmetro -d inicia o container desanexado do console do docker client. A imagem ser
+```bash
+$ docker run –d --name mynginx nginx
+$ docker ps
+```
+  Você verá algo semelhante a 
+```bash
+CONTAINER ID  IMAGE  COMMAND                        CREATED             STATUS                 PORTS              NAMES
+fdd7c763a066  nginx     "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   80/tcp 
+```
+2.  Veja que o container declara servir algo na porta 80/tcp. vamos tentar aceçá-lo
+```bash
+$ curl http://localhost
+```
+Como vc pode ver não está acessível. O motivo é que apesar de exposta a porta, ela não está _publicada_ para o host
+
+3. Faca a mesma chamada curl de dentro do container
+
+```bash
+# Iniciando um processo /bin/bash (-i) com um terminal (-t) no container mynginx criado anteriormente
+$ docker exec --it mynginx -- /bin/bash
+# Acessando a porta 80 local
+bash-5.2$# curl http://localhost
+bash-5.2$# exit 
+# Pare e remova o container
+docker stop mynginx
+docker rm mynginx
+```
+
+4. Publicando a porta exposta pelo container para o host
+```bash
+# Iniciando um container nginx publicando a porta 80 do container atravéz da porta 8080 do host.
+$  docker run -d --publish 8080:80 nginx
+# Acessando o container externament
+$ curl http://localhost:8080
+# Parando e removendo o container
+docker stop mynginx
+docker rm mynginx
+```
+
+## LAB 5
