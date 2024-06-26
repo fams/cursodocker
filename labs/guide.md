@@ -1,5 +1,7 @@
 # LABS Unidade 1
 
+Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheatsheet.pdf) para ajudar com os comandos:
+
 ## LAB 1
 
 **Objetivo**: Executar um container utilizando todos os comandos do ciclo de vida
@@ -216,3 +218,157 @@ docker rm mynginx
 ```
 
 ## LAB 5
+
+
+## LAB 7
+**Objetivo:** Criar uma imagem e executar um container a partir da imagem criada
+1. Criando uma imagem docker
+   
+```bash
+$ cd labs/lab7
+$ cat Dockerfile
+# -t <imagename>:<version>
+$ docker build . -t py-web:01
+```
+2. Executando a imagem
+
+```bash
+$ docker run --rm –d --publish 8080:80 --name my-py-web-01 py-web:01
+$ curl http://localhost:8080
+$ docker stop my-py-web-01
+```
+
+3. Edite o Dockerfile e re-construa a imagem. Altere a porta do webserver para 8080
+```Dockerfile
+FROM ubuntu:22.04
+LABEL mantainer=fams@linuxplace.com.br
+SHELL [ "/bin/bash", "-c" ]
+ENV FAMS=FERNANDO
+WORKDIR  /var/www/html
+EXPOSE 80
+RUN apt-get update -y && apt-get install --no-install-recommends python3 -y
+COPY ./www/ /var/www/html
+# Alterando porta de 80 para 8080                           |
+#                                               V
+ENTRYPOINT [ "python3", "-m", "http.server", "8080" ] 
+```
+
+2. Construindo a imagem com tag 02
+
+```shell
+$ docker build . -t py-web:02
+```
+
+3. Executando e testando a conexão:
+
+```bash
+$ docker run –d --publish 8080:8080 --rm --name my-py-web-02 py-web:02
+$ curl http://localhost:8080
+$ docker stop my-py-web-02
+```
+
+4. Depois de verificar a falha, edite o Dockerfile novamente e altere a diretiva EXPOSE e reconstrua a imagem
+
+```Dockerfile
+FROM ubuntu:22.04
+LABEL mantainer=fams@linuxplace.com.br
+SHELL [ "/bin/bash", "-c" ]
+ENV FAMS=FERNANDO
+WORKDIR  /var/www/html
+# Alterando porta de 80 para 8080
+#       V
+EXPOSE 8080
+RUN apt-get update -y && apt-get install --no-install-recommends python3 -y
+COPY ./www/ /var/www/html
+# Alterando porta de 80 para 8080               |
+#                                               V
+ENTRYPOINT [ "python3", "-m", "http.server", "8080" ] 
+```
+
+```bash
+$ docker docker build . -t py-web:03
+```
+5. Execute a imagem e teste
+
+```bash
+$ docker run –d --publish 8080:8080 py-web:03
+$ curl http://localhost:8080
+```
+
+##  LAB 8
+**Objetivo:** Utilizando uma imagem a partir de outra e um repositório remoto
+
+1. Liste a imagem do lab7 e vc vai econtrar algo como abaixo
+
+```bash
+$ docker image ls
+
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+py-web        03        fe2b3c002799   2 hours ago     160MB
+```
+2. Crie outro tag para a imagem
+```bash
+$ docker tag -t py-web:04 py-web:03
+```
+
+3. Crie a imagem do lab8 a partir da imagem do lab7
+
+```Dockerfile
+FROM fams/py-web:04
+COPY ./www-2/ /var/www/html
+```
+
+```bash
+$ docker build . –t lab8:01
+$ docker image ls
+
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+py-web        04        fe2b3c002799   1 hours ago     160MB
+Lab8:01       01        fcd86ff8ce8c   1 minute ago    160MB
+```
+
+4. Crie uma tag para envio para o repositório.
+   Aqui você deve ter acesso ao seu namespace no docker Hub Cadastrado na aula de instalação. Troque o mynamespace para o seu namespace do docker HUB.
+
+```bash
+$ docker tag mynamespace/py-web:04 py-web
+$ docker push
+```
+
+5. Faça login no repositório. Se você estiver usando o docker desktop, o login já estará feito.
+
+```bash
+$ docker login
+Username: meuemail@dominio.com
+Password: ************
+WARNING! Your password will be stored unencrypted in 
+Login Succeeded
+```
+
+6. Apague a imagem local
+```bash
+$ docker rm py-web:04
+$ docker rm mynamespace/py-web:04
+$ docker image ls
+```
+
+5. Edite o Dockerfile para utilizar a imagem do docker hub e recrie a imagem
+```Dockerfile
+FROM fams/py-web:04
+COPY ./www /var/www/html
+```
+
+```bash
+$ docker build . –t lab8:02
+$ docker image ls
+
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+mynamespace/py-web   04        fe2b3c002799   1 hours ago     160MB
+lab8:01       02        d2c94e258dcb   1 minute ago    160MB
+```
+
+Perceba que vc foi capaz de recriar a imagem usando a fonte do repositório
+
+## LAB 9
+**Objetivo:** Otimizando o build 
+
