@@ -370,5 +370,179 @@ lab8:01       02        d2c94e258dcb   1 minute ago    160MB
 Perceba que vc foi capaz de recriar a imagem usando a fonte do repositório
 
 ## LAB 9
-**Objetivo:** Otimizando o build 
+**Objetivo:** Otimizando a construção da imagem
 
+1. Construa a imagem do lab9. Nesse lab utilizaremos mais de um Dockerfile
+
+```bash
+$ cd labs/lab9
+$ docker build . -t lab9:01 -f Dockerfile-1
+```
+
+2. Execute a imagem e teste o funcionamento. Você pode utiliar o browser no lugar do curl se quiser visulizar a páginas
+
+```bash
+$ docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
+$ curl http://localhost:8080
+$ docker stop lab9-01
+```
+
+3. Edite o index.hml em www, troque a linha 45 de 9 para 9.1 e recrie a imagem
+```html
+...
+        <h1>Bem-vindo ao LAB 9 - Docker</h1>
+...
+```
+
+```bash
+$ docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
+$ curl http://localhost:8080
+$ docker stop lab9-01
+```
+
+**Perceba que todos os passos do build foram refeitos, inclusive a instalação do golang.**
+
+4. Vamos agora otimizar o Dockerfile para otimizar o cache. Reorganize o Dockerfile-1 com o nome de Dockerfile-2 com a ordem abaixo
+
+```Dockerfile
+FROM ubuntu:22.04
+LABEL mantainer=fams@linuxplace.com.br
+RUN apt update -y 
+RUN apt install --no-install-recommends -y golang-go
+WORKDIR  /src
+COPY main.go /src
+COPY go.mod /src
+RUN go mod tidy
+RUN go build -o httpserver main.go
+RUN cp httpserver /usr/local/sbin
+ENV PATH=$PATH:/usr/local/bin
+COPY ./www/ /var/www/html
+WORKDIR  /var/www/html
+EXPOSE 8000
+ENTRYPOINT [ "httpserver" ]
+```
+
+```bash
+$ docker build -f Dockerfile-2 -t lab9:02 .
+```
+
+Veja as camadas que foram geradas com o novo dockerfile 
+```bash
+$ docker history lab9:02
+IMAGE          CREATED          CREATED BY                                      SIZE      COMMENT
+dd36894cd0e3   43 seconds ago   ENTRYPOINT ["httpserver"]                       0B        buildkit.dockerfile.v0
+<missing>      43 seconds ago   EXPOSE map[8000/tcp:{}]                         0B        buildkit.dockerfile.v0
+<missing>      43 seconds ago   WORKDIR /var/www/html                           0B        buildkit.dockerfile.v0
+<missing>      43 seconds ago   COPY ./www/ /var/www/html # buildkit            1.84kB    buildkit.dockerfile.v0
+<missing>      43 seconds ago   ENV PATH=/usr/local/sbin:/usr/local/bin:/usr…   0B        buildkit.dockerfile.v0
+<missing>      43 seconds ago   RUN /bin/sh -c cp httpserver /usr/local/sbin…   6.42MB    buildkit.dockerfile.v0
+<missing>      43 seconds ago   RUN /bin/sh -c go build -o httpserver main.g…   6.44MB    buildkit.dockerfile.v0
+<missing>      44 seconds ago   RUN /bin/sh -c go mod tidy # buildkit           21B       buildkit.dockerfile.v0
+<missing>      45 seconds ago   COPY go.mod /src # buildkit                     21B       buildkit.dockerfile.v0
+<missing>      45 seconds ago   COPY main.go /src # buildkit                    376B      buildkit.dockerfile.v0
+<missing>      45 seconds ago   WORKDIR /src                                    0B        buildkit.dockerfile.v0
+<missing>      45 seconds ago   RUN /bin/sh -c apt install --no-install-reco…   431MB     buildkit.dockerfile.v0
+<missing>      58 seconds ago   RUN /bin/sh -c apt update -y # buildkit         52.7MB    buildkit.dockerfile.v0
+<missing>      58 seconds ago   LABEL mantainer=fams@linuxplace.com.br          0B        buildkit.dockerfile.v0
+<missing>      3 weeks ago      /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      3 weeks ago      /bin/sh -c #(nop) ADD file:89847d76d242dea90…   77.9MB
+<missing>      3 weeks ago      /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+<missing>      3 weeks ago      /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+<missing>      3 weeks ago      /bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH     0B
+```
+
+5. Altere novamente o HTML e recrie a imagem
+```html
+...
+        <h1>Bem-vindo ao LAB 9:02 - Docker</h1>
+...
+```
+
+```bash
+$ docker build -f Dockerfile-2 -t lab9:02 .
+```
+
+Repare que somente a cópia dos arquivos foi refeita
+
+6. Use o docker history para ver as camadas criadas na imagem
+
+```bash
+$ docker history lab9:02
+[+] Building 0.4s (16/16) FINISHED                                                                             docker:default
+ => [internal] load build definition from Dockerfile-2                                                                   0.0s
+ => => transferring dockerfile: 423B                                                                                     0.0s
+ => [internal] load .dockerignore                                                                                        0.0s
+ => => transferring context: 2B                                                                                          0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:22.04                                                          0.2s
+ => [ 1/11] FROM docker.io/library/ubuntu:22.04@sha256:19478ce7fc2ffbce89df29fea5725a8d12e57de52eb9ea570890dc5852aac1ac  0.0s
+ => [internal] load build context                                                                                        0.0s
+ => => transferring context: 1.96kB                                                                                      0.0s
+ => CACHED [ 2/11] RUN apt update -y                                                                                     0.0s
+ => CACHED [ 3/11] RUN apt install --no-install-recommends -y golang-go                                                  0.0s
+ => CACHED [ 4/11] WORKDIR  /src                                                                                         0.0s
+ => CACHED [ 5/11] COPY main.go /src                                                                                     0.0s
+ => CACHED [ 6/11] COPY go.mod /src                                                                                      0.0s
+ => CACHED [ 7/11] RUN go mod tidy                                                                                       0.0s
+ => CACHED [ 8/11] RUN go build -o httpserver main.go                                                                    0.0s
+ => CACHED [ 9/11] RUN cp httpserver /usr/local/sbin                                                                     0.0s
+ => [10/11] COPY ./www/ /var/www/html                                                                                    0.0s
+ => [11/11] WORKDIR  /var/www/html                                                                                       0.0s
+ => exporting to image                                                                                                   0.1s
+ => => exporting layers                                                                                                  0.1s
+ => => writing image sha256:275ab47b99eacf423020e0bcf5a8913875e3e5d141143c6e598a63a58d5647d2                             0.0s
+ => => naming to docker.io/library/lab9:02                                                                               0.0s
+```
+
+Repare que somente as camadas da copia foram recriadas
+
+7. Vamos otimizar o Dockerfile para ter menos camadas. 
+   1. Concatene comandos shell seguidos com && para que sejam um único comando
+   
+```Dockerfile
+FROM ubuntu:22.04
+LABEL mantainer=fams@linuxplace.com.br
+RUN apt update -y && apt install --no-install-recommends -y golang-go
+WORKDIR  /src
+COPY src/ /src
+COPY go.mod /src
+RUN go mod tidy && go build -o httpserver main.go && cp httpserver /usr/local/sbin
+ENV PATH=$PATH:/usr/local/bin
+COPY ./www/ /var/www/html
+WORKDIR  /var/www/html
+EXPOSE 8000
+ENTRYPOINT [ "httpserver" ]
+```
+
+   2. Mova os arquivos do programa go para um diretório src.
+```bash
+$ mkdir src
+$ mv main.go go.mod src
+```
+   3. Edite o Dockerfile para fazer uma única cópia. Estamos intencionalmente separando a cópia do programa go para a copia da pagina html
+
+```Dockerfile
+FROM ubuntu:22.04
+LABEL mantainer=fams@linuxplace.com.br
+RUN apt update -y && apt install --no-install-recommends -y golang-go
+WORKDIR  /src
+COPY src/ /src
+RUN go mod tidy && go build -o httpserver main.go && cp httpserver /usr/local/sbin
+ENV PATH=$PATH:/usr/local/bin
+COPY ./www/ /var/www/html
+WORKDIR  /var/www/html
+EXPOSE 8000
+ENTRYPOINT [ "httpserver" ]
+```
+   4. Reconstrua a imagem e veja a diminuição do número de camadas
+```bash
+$ docker build . -t lab9:3
+$ docker history -t lab9:3
+```
+
+## LAB 10
+**Objetivo** Uso do multi-stage Build
+
+Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab anterior criamos imagens com o ubuntu
+
+1. Veja o Dockerfile do LAB10
+2. 
