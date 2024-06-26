@@ -5,6 +5,7 @@ COPY main.go /src
 COPY go.mod /src
 RUN apt update -y 
 RUN apt install --no-install-recommends -y golang-go
+RUN go mod tidy
 RUN go build -o httpserver main.go
 RUN cp httpserver /usr/local/sbin
 ENV PATH=$PATH:/usr/local/bin
