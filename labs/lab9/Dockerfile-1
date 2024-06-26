@@ -12,4 +12,4 @@ ENV PATH=$PATH:/usr/local/bin
 COPY ./www/ /var/www/html
 WORKDIR  /var/www/html
 EXPOSE 80
-ENTRYPOINT [ "httpserver", "-port", "80" ]
+ENTRYPOINT [ "httpserver", "--port", "80" ]

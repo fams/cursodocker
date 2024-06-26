@@ -9,6 +9,7 @@ import (
 func main() {
 	var port string
 	flag.StringVar(&port, "port", "8000", "the port of http file server")
+	flag.StringVar(&port, "p", "8000", "the port of http file server short")
 	flag.Parse()
 
 	fmt.Printf("Serving HTTP on 0.0.0.0 port %s ...\n", port)
