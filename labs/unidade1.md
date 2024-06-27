@@ -545,4 +545,42 @@ $ docker history -t lab9:3
 Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab anterior criamos imagens com o ubuntu
 
 1. Veja o Dockerfile do LAB10
-2. 
+
+```Dockerfile
+FROM ubuntu:22.04 AS build
+LABEL mantainer=fams@linuxplace.com.br
+RUN apt update -y && apt install --no-install-recommends -y golang-go
+WORKDIR  /src
+COPY src/ /src
+RUN  go mod tidy && CGO_ENABLED=0 GOOS=linux go build -o httpserver main.go
+
+FROM scratch
+COPY --from=build /src/httpserver /usr/local/bin/httpserver
+ENV PATH=$PATH:/usr/local/bin
+COPY ./www/ /var/www/html
+WORKDIR  /var/www/html
+EXPOSE 8000
+ENTRYPOINT [ "/usr/local/bin/httpserver" ]
+```
+
+2. Execute o docker build 
+
+```bash
+$ docker build . -t lab10:01
+```
+
+3. Liste as imagens e veja a diferença de tamanho
+```bash
+$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+lab10        01        d10b2234bcbf   2 minutes ago    6.37MB
+<none>       <none>    4dbc0d21ff07   20 minutes ago   6.43MB
+<none>       <none>    a8bb29293bf7   20 minutes ago   6.43MB
+<none>       <none>    4c935bfce53a   20 minutes ago   6.43MB
+<none>       <none>    81d17dea5d31   20 minutes ago   6.43MB
+lab9         03        dfbe392f7c1e   26 minutes ago   574MB
+lab9         02        275ab47b99ea   35 minutes ago   574MB
+<none>       <none>    dd36894cd0e3   37 minutes ago   574MB
+```
+
+A imagem lab10 é significamente menor que a imagem lab10. Isso acontece porque usamos uma imagem scratch como base para nossa imagem, O sistema operacional e toda a suite de compilação foram usadas na primeira imagem a build, somente o binário foi copiado para a segunda imagem. Esse procedimento vindo da scratch é possível porque o go possui uma compilaçõ estátcia, isso é, não depende de bibliotecas. Mas esse procedimento pode ser usado para outras linguagens com a segunda imagem menor
