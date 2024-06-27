@@ -218,7 +218,38 @@ docker rm mynginx
 ```
 
 ## LAB 5
+**Objetivo:** Servir paginas locais com o NGINX
+1. cd lab5
+```bash
+# Mount Read0Only
+$  docker run --name my-nginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx 
+$ curl localhost:8080
+```
 
+## LAB 6
+**Objetivo:** Utilizando uma imagem de banco mysql
+1. Instale o cliente mysql
+```bash
+$ apt install -y mysql-client
+```
+
+2. Execute o banco mysql com diretório local e iniciando o banco
+```bash
+# utilize os sqls do lab6 como scripts de inicio do mysql
+docker run --rm -d  -v ./db:/var/lib/mysql -v./lab6/:/docker-entrypoint-initdb.d/  --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 mysql:latest
+# Conecte no banco 
+mysql -pmy-secret-pw -uroot -h 127.0.0.1 <<EOF
+use guess_game;
+select * from jogos;
+EOF
+```
+3. Interrompa o mysql, ele será removido devido ao --rm
+```bash
+$ docker stop mysql-container
+$ docker rm mysql-container
+```
+
+4. Inicie o mysql utilizando o mesmo container de dados
 
 ## LAB 7
 **Objetivo:** Criar uma imagem e executar um container a partir da imagem criada
