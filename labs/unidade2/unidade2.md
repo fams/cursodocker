@@ -127,8 +127,7 @@ Continuando do anterior
 
 Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo para executar os comandos
 
-No Terminal 2
-1. Crie uma ancora de filesystem para suas namespaces.
+1. _No Terminal 2_, cCrie uma ancora de filesystem para suas namespaces.
 
    ```bash
    # como root
@@ -137,8 +136,7 @@ No Terminal 2
     touch /namespaces/001/{net,ipc,mount,pid}
     ```
 
-No Terminal 1
-2. Entre na namespace de rede isolada
+2. _No Terminal 1_, entre na namespace de rede isolada
 
    ```bash
     unshare --net=/namespaces/001 /bin/bash
@@ -148,24 +146,22 @@ No Terminal 1
     ip link set dev lo up
    ```
 
-No Terminal 2
-3. Configurar a rede no namespace 001
-   
+3. _No Terminal 2_, configurar a rede no namespace 001
+
    ```bash
     # Criar o par de vethX
     ip link add veth0 type veth peer name veth1
-	# Atribuir a veth0 ao namespace
+    # Atribuir a veth0 ao namespace
     ip link set veth0 netns /root/namespaces/net
     # Definir um ip para a rede
     ip addr add 10.23.0.1/30 dev veth1
     # Carregar a interface 
     ip link set dev veth1 up
-    ```
+   ```
 
-No Terminal 1
-4. Configurar a rede 
-    
-    ```bash
+4. _No Terminal 1_, configurar a rede
+
+   ```bash
     # Atribuir ip à interface
     ip addr add 10.23.0.2/30 dev veth0
     # inicializar a interface
@@ -173,9 +169,8 @@ No Terminal 1
     # Teste de rede 
     ping 10.23.0.1
 
-    ```
-    
-   
+   ```
+
 ## lab 5
 
 ### Objetivo: Demonstrar o uso de cgroups
