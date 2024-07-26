@@ -244,10 +244,8 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
 
 4. Testando o limite de memória com o gastador de recursos
 
-    **Método 1**. Adicionando manualmente a task no cgroup, você precisará de dois terminais no mesmo sistema
-
-    1. Obtenha o PID do Terminal 1
-       No terminal 1
+   1. Obtenha o PID do Terminal 1
+      - No terminal 1
 
        ```bash
         # vá para onde está o consumidor de memória
@@ -258,7 +256,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
        echo $$
        ```
 
-    2. No Teminal 2, adicione o PID do Terminal 1 no grupo-0
+   2. No Teminal 2, adicione o PID do Terminal 1 no grupo-0
 
        1. Usando cgroup v1
 
@@ -274,7 +272,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
           echo {PID} > cgroup.procs
           ```
 
-    3. No Terminal 1. Teste o limite de memória. O $? mostra a saída do último comando utilizado. o 137 é saída por oom-kill
+   3. No Terminal 1. Teste o limite de memória. O $? mostra a saída do último comando utilizado. o 137 é saída por oom-kill
 
        ```bash
         ./waste-resource -memory-hog 1
@@ -309,42 +307,233 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
 
 6. Testando o limite de CPU com o gastador de recursos
 
-    **Método 1**. Adicionando manualmente a task no cgroup, você precisará de dois terminais no mesmo sistema
+   1. Obtenha o PID do Terminal 1
+      No terminal 1
 
-    1. Obtenha o PID do Terminal 1
-       No terminal 1
+      ```bash
+      # vá para onde está o consumidor de recursos
+      cd labX
+      # crie um novo shell para não limitar o atual
+      bash 
+      # obtenha o PID do shell utilizado
+      echo $$
+      ```
 
-       ```bash
-        # vá para onde está o consumidor de recursos
-       cd labX
-        # crie um novo shell para não limitar o atual
-        bash 
-        # obtenha o PID do shell utilizado
-       echo $$
-       ```
+   2. No Teminal 2, adicione o PID do Terminal 1 no grupo-0
 
-    2. No Teminal 2, adicione o PID do Terminal 1 no grupo-0
+      1. Usando cgroup v1
 
-       1. Usando cgroup v1
+         ```bash
+         cd /sys/fs/cgroup/cpu/grupo-0
+         echo {PID} > tasks
+         ```
 
-          ```bash
-          cd /sys/fs/cgroup/cpu/grupo-0
-          echo {PID} > tasks
-          ```
+      2. Usando cgroup v2
 
-       2. Usando cgroup v2
+         ```bash
+         cd /sys/fs/cgroup/grupo-0/
+         echo {PID} > cgroup.procs
+         ```
 
-          ```bash
-          cd /sys/fs/cgroup/grupo-0/
-          echo {PID} > cgroup.procs
-          ```
+   3. No Terminal 1. Teste o limite de cpu
 
-    3. No Terminal 1. Teste o limite de cpu
+      ```bash
+      ./waste-resource -waste-cpu 1 &
+      # Verifique o consumo com o comando top
+      top
+      # Saia do terminal limitado
+      exit
+      ```
 
-       ```bash
-        ./waste-resource -waste-cpu 1 &
-        # Verifique o consumo com o comando top
-        top
-        # Saia do terminal limitado
-        exit
-       ```
+## lab 6
+
+### Objetivo: Aprender os comandos básicos do docker logs
+
+1. Execute um contêiner que gera logs
+
+   ```bash
+   docker run --name lab6_busybox -d busybox sh -c 'while true; do echo "Log entry at $(date)"; sleep 5; done'
+   sleep 60
+   ```
+
+2. Ver os 5 ultimos logs
+
+   ```bash
+   docker logs -n 5 lab6_busybox
+   ```  
+
+3. Ver os logs dos ultimos 10s
+
+   ```bash
+   docker logs --since 10s lab6_busybox
+   ```  
+
+4. Ver os logs até 30s atrás
+
+   ```bash
+   docker logs --until 30s lab6_busybox
+   ```
+
+5. Acompanhar os logs em tempo real
+
+   ```bash
+   docker logs -f lab6_busybox
+   ```
+
+6. Encerrar
+
+   ```bash
+   docker stop lab6_busybox
+   docker logs lab6_busybox
+   docker rm lab6_busybox
+   ```
+
+## lab 7
+
+### Objetivo: Ver como um volume local pode ser utilizado para persistir dados
+
+1. Crie um volume docker e monte-o em um contêiner
+
+   ```bash
+   docker volume create lab7_volume_named
+   docker run --name lab7_container_1 --mount source=lab7_volume_named,target=/data -it  busybox
+   $ echo "Inside Container id $(hostname)" >/data/lab71.txt
+   $ exit
+   ```
+
+2. Crie um contêiner com o volume nomeado junto ao run
+
+   ```bash
+   docker run --name lab7_container_2 --mount source=lab7_volume_named2,target=/data -it busybox
+   $ echo "Inside id $(hostname)"  > /data/lab71.txt
+   $ exit
+   ```
+
+   ```bash
+   docker run --name lab7_container_3 -v /data -it busybox
+   $ echo "Inside id $(hostname)"  > /data/lab71.txt
+   $ exit
+
+3. Acesse os dados de outro contêiner
+
+   ```bash
+   docker volume ls #verifique o nome dos conteienrs
+   docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
+   $ echo "Inside Conatainer id $(hostname)" > /data4/lab71.txt
+   $ cat /data/lab71.txt
+   $ cat /data2/lab71.txt
+   $ cat /data3/lab71.txt
+   exit
+   ```
+
+4. Liste os volumes, os conteiners que os acessam e tente removê-los. Reflita o que aconteceu e remova-os conteiners
+
+   ```bash
+   docker volume ls
+   docker rm <<volumes>>
+   ```
+
+## lab 8
+
+### Objetivo: Entender como funcionam as redes bridge no Docker e como conectar contêineres usando essa rede padrão
+
+1. Verificar Redes Existentes:
+   - Liste as redes existentes no Docker.
+
+    ```bash
+   docker network ls
+   ```
+
+2. Criar uma Rede Bridge:
+   - Crie uma nova rede bridge chamada `minha_bridge`.
+
+   ```bash
+   docker network create minha_bridge
+   ```
+
+3. Executar Contêineres na Rede Bridge:
+   - Execute dois contêineres `busybox` na nova rede `minha_bridge` e inicie um shell interativo.
+
+   ```bash
+   docker run -dit --name conteiner1 --network minha_bridge busybox
+   docker run -dit --name conteiner2 --network minha_bridge busybox
+   ```
+
+4. Testar Conectividade entre os Contêineres:
+   - Acesse o primeiro contêiner e use o comando `ping` para verificar a conectividade com o segundo contêiner.
+
+   ```bash
+   docker exec -it conteiner1 sh
+   ping conteiner2
+   ```
+
+5. Limpar o Ambiente:
+   - Saia do contêiner e remova os contêineres e a rede criada.
+
+   ```bash
+   docker stop conteiner1 conteiner2
+   docker rm conteiner1 conteiner2
+   docker network rm minha_bridge
+   ```
+
+## Lab 9
+
+### Objetivo: Entender como funciona a rede host no Docker e como ela difere das outras redes
+
+1. **Executar um Contêiner na Rede Host:**
+   - Execute um contêiner `nginx` na rede host.
+
+   ```bash
+   docker run -d --name nginx_host --network host nginx
+   ```
+
+2. **Verificar a Conectividade:**
+   - Acesse a aplicação Nginx através do IP do host na porta 80.
+
+   ```bash
+   curl http://localhost
+   ```
+
+3. **Comparar com a Rede Bridge:**
+   - Execute um contêiner `nginx` na rede bridge e acesse através da porta mapeada.
+
+   ```bash
+   docker run -d --name nginx_bridge -p 8080:80 nginx
+   curl http://localhost:8080
+   ```
+
+4. **Limpar o Ambiente:**
+   - Remova os contêineres criados.
+
+   ```bash
+   docker stop nginx_host nginx_bridge
+   docker rm nginx_host nginx_bridge
+   ```
+
+## Lab 10
+
+### Objetivo: Entender como utilizar um repositório docker, executando um local
+
+1. Utilize o compose do lab10 da Unidade 2
+   - Avalie como foi construído o compose
+
+   ```bash
+   cd lab10
+   docker compose up -d
+   ```
+
+2. Baixe a imagem do bash para sua máquina e envie para seu repositório local
+
+   ```docker
+   docker pull bash:latest
+   docker tag bash:latest localhost:5000/bash:latest
+   docker push localhost:5000/bash:latest
+   ```
+
+3. Navegue no diretório data mapeado para o repositório e procure entender a estrutura. Note que não existe um arquivo com a imagem bash mas uma coleção de arquivos com manifestos e imagens
+
+## Lab 11
+
+### Objetivo: Entender o uso das configurações de segurança do runtime
+
+
