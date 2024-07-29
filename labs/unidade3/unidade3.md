@@ -204,3 +204,47 @@
    curl http://localhost:8080/contador #repita várias vezes
    ```
 
+## Lab 3
+
+### Objetivo: Testar os controles de restart do docker compose
+
+1. **Modificar o serviço do flask para utilizar a versão 2 do contador**
+
+   ```yaml
+     ...
+     flask:
+      build: contador2 # diretório ond está o serviço contador 2
+     ...
+    ```
+
+2. **Recriar o serviço com a nova imagem e testá-lo**
+
+   ```bash
+   docker compose up --build
+   # repita 21 x
+   curl http://localhost:8080/contador 
+   ```
+
+3. **Verificar o estado dos containers da stack**
+
+   ```bash
+   docker compose ps
+   ```
+
+4. **Adicionar a diretiva de restart ao compose**
+
+   ```yaml
+     ...
+     flask:
+      build: contador2 # diretório ond está o serviço contador 2
+      restart: on-failure
+     ...
+   ```
+
+5. **Testar novamente o acesso**
+
+   ```bash
+   docker compose up --build
+   # repita 21 x
+   curl http://localhost:8080/contador 
+   ```

@@ -16,7 +16,7 @@ max_requests = os.getenv('MAX_REQUESTS', '20')
 r = redis.StrictRedis(host=redis_host, port=redis_port,
                       password=redis_password, decode_responses=True)
 
-start_time = time.time()
+start_time = time.ctime()
 local_counts = 0
 
 
