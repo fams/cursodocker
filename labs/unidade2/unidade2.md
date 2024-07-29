@@ -534,6 +534,111 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
 
 ## Lab 11
 
-### Objetivo: Entender o uso das configurações de segurança do runtime
+### Objetivo: Entender como gerenciar usuários e grupos dentro dos contêineres Docker para melhorar a segurança.
 
+1. **Executar um Contêiner com Usuário Padrão:**
+   - Execute um contêiner `ubuntu` e verifique o usuário atual.
 
+   ```bash
+   docker run -it --name user_test ubuntu
+   whoami
+   ```
+
+2. **Adicionar um Novo Usuário:**
+   - Dentro do contêiner, adicione um novo usuário chamado `novo_usuario`.
+
+   ```bash
+   apt-get update
+   apt-get install -y sudo
+   adduser novo_usuario
+   usermod -aG sudo novo_usuario
+   ```
+
+3. **Executar o Contêiner com o Novo Usuário:**
+   - Saia do contêiner e execute-o novamente com o novo usuário `novo_usuario`.
+
+   ```bash
+   docker commit user_test user_test_image
+   docker rm user_test
+   docker run -it --name user_test --user novo_usuario user_test_image
+   whoami
+   ```
+
+4. **Limpar o Ambiente:**
+   - Remova o contêiner e a imagem criados.
+
+   ```bash
+   docker rm user_test
+   docker rmi user_test_image
+
+## Lab 12
+
+### Objetivo: Entender como limitar os recursos (CPU e memória) dos contêineres Docker para melhorar a segurança e a estabilidade do sistema.
+
+1. **Crie uma imagem com o gastador de recursos do lab5
+
+   ```bash
+   cd lab5
+   docker build -t waste-resources .
+   ```
+
+2. **Executar um Contêiner com Limites de CPU e Memória:**
+
+    ```bash
+   docker run -d --name limited_container --cpus=".5" --memory="256m" waste-resources -waste-cpu 1
+   docker run -d --name limited_container --cpus=".5" --memory="256m" waste-resources -hog-memory 25
+   ```
+
+3. **Verificar Limites de Recursos:**
+   - Use o comando `docker stats` para verificar os recursos consumidos pelo contêiner.
+
+   ```bash
+   docker stats limited_container
+   ```
+
+4. **Limpar o Ambiente:**
+   - Remova o contêiner criado.
+
+   ```bash
+   docker stop limited_container
+   docker rm limited_container
+   ```
+
+## Laboratório 13
+
+### Objetivo: Aprender a aplicar políticas de segurança utilizando `--cap-drop` para remover capacidades específicas em contêineres Docker
+
+1. **Executar um Contêiner sem Remover Capacidades:**
+   - Execute um contêiner `busybox` e teste a capacidade de usar `ping`, DNS e TCP.
+
+   ```bash
+   docker run --rm -it busybox
+   ```
+
+   - Dentro do contêiner, teste os seguintes comandos:
+
+   ```sh
+   ping -c 2 google.com
+   nslookup google.com
+   wget http://example.com
+   exit
+   ```
+
+2. **Executar um Contêiner com `--cap-drop` para Remover Capacidades:**
+   - Execute um contêiner `busybox` removendo a capacidade `CAP_NET_RAW` que é necessária para o comando `ping`.
+
+   ```bash
+   docker run --rm -it --cap-drop=NET_RAW busybox
+   ```
+
+3. **Testar as Restrições:**
+   - Dentro do contêiner, tente usar os mesmos comandos novamente:
+
+   ```sh
+   ping -c 2 google.com    # Deve falhar
+   nslookup google.com     # Deve funcionar
+   wget http://example.com # Deve funcionar
+   ```
+
+4. **Analisar o Comportamento:**
+   - Observe que o comando `ping` falha enquanto os comandos `nslookup` e `wget` ainda funcionam, indicando que as capacidades de DNS e TCP estão intactas.

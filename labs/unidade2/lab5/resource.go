@@ -46,7 +46,7 @@ func wasteCPU(threads int) {
 	for i := 0; i < threads; i++ {
 		go func() {
 			// Loop forever
-			fmt.Printf("Wasting CPU taks %d\n", i)
+			fmt.Printf("Wasting CPU task %d\n", i)
 			for {
 			}
 		}()
