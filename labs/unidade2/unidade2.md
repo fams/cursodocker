@@ -13,7 +13,7 @@ Você vai precisar de uma máquina Linux para esses LABS.
 
        ```bash
        sudo apt install debootstrap
-       sudo debootstrap --variant=buildd --include=iputils-ping,python3,procps,net-tool,iproute2 --arch=i386 stable ./rootfs
+       sudo debootstrap --variant=buildd --include=iputils-ping,python3,procps,net-tools,iproute2 --arch=i386 stable ./rootfs
        ```
 
    2. Se estiver em uma distribuição baseada em rpm, como o fedora, siga os seguintes passos:
@@ -60,6 +60,8 @@ Você vai precisar de uma máquina Linux para esses LABS.
     # execute o pivot_root trocando os mount points raiz atual para old_root e movendo o raiz para new_root
     cd new_root
     pivot_root . old_root
+    # reinicie o cache de caminhos de comando do bash
+    hash -r
     # Verifique que o / atual é o montado em rootfs
     ls /tmp/rootfs.txt
     # monte o /proc no novo namespace
