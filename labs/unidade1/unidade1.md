@@ -11,10 +11,10 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # Download da imagem
     $ docker image pull bash:latest
-    
+
     # Lista imagens locais
     $ docker image ls
-    
+
     # Cria um container de nome mybash a partir da imagem bash:latest
     $ docker container create --name mybash bash:latest
     ```
@@ -23,8 +23,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Mostrar os containers em execução
-    $ docker ps 
-    
+    $ docker ps
+
     # Mostrar todos os containers criados
     $ docker ps –a
     ```
@@ -34,7 +34,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # Inicar  o container mybash
     $ docker start mybash
-    
+
     # Verifique novamente se o container está em exeução
     $ docker ps
     ```
@@ -45,11 +45,11 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Criar o container em modo interativo.
     # -i indica o modo interativo, o -t cria um tty para o container
     $ docker container create -i -t --name mybash bash:latest
-    
+
     # Iniciar no modo interativo e attached
     $ docker start -ai mybash
-    bash-5.2# 
-     
+    bash-5.2#
+
     # Sair do container com ele anexado
     # (Ctrl+P Ctrl+Q)         # <- sequencia de dettach
     $ docker ps               # mostra os containers em execução
@@ -75,11 +75,11 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # Criar o container em modo interativo
     $ docker container create -it --name mybash bash:latest
-    
+
     # Iniciar o container no modo interativo e anexar-se a ele
     $ docker start -ai mybash
     bash-5.2#
-    
+
     # Sair do container com ele anexado
     # (Ctrl+P Ctrl+Q)           # <- sequencia de dettach
     $ docker ps               # mostra os containers em execução
@@ -91,7 +91,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Anexar ao container
     $ docker attach mybash
     bash-5.2$#
-    
+
     # dettach
     # (Ctrl+P Ctrl+Q)
     $
@@ -110,8 +110,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Executar outro processo no container
     $ docker exec -it mybash /usr/local/bin/bash
     bash-5.2#
-    # Listar os processos no container 
-    bash-5.2# ps –ef 
+    # Listar os processos no container
+    bash-5.2# ps –ef
     bash-5.2# exit
     ```
 
@@ -123,7 +123,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Verifique o conteúdo da variável no container
     bash-5.2# echo $POSGRAD
     bash-5.2# exit
-    $ 
+    $
     ```
 
 6. Iniciando um container desanexado, retornando o controle para o shell do host
@@ -155,7 +155,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Criar um arquivo no /tmp do container
     bash-5.2$# touch /tmp/containerfile.txt
     # Ctrl+P Ctrl+Q (dettash)
-    
+
     # Verificar a inexistência do arquivo containerfile.txt no nost
     $ ls /tmp
     ```
@@ -191,7 +191,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     CONTAINER ID  IMAGE  COMMAND                        CREATED             STATUS                 PORTS              NAMES
-    fdd7c763a066  nginx     "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   80/tcp 
+    fdd7c763a066  nginx     "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   80/tcp
     ```
 
 2. Veja que o container declara servir algo na porta 80/tcp. vamos tentar aceçá-lo
@@ -209,7 +209,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ docker exec --it mynginx -- /bin/bash
     # Acessando a porta 80 local
     bash-5.2$# curl http://localhost
-    bash-5.2$# exit 
+    bash-5.2$# exit
     # Pare e remova o container
     docker stop mynginx
     docker rm mynginx
@@ -235,7 +235,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Mount Read0Only
-    $  docker run --name my-nginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx 
+    $  docker run --name my-nginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx
     $ curl localhost:8080
     ```
 
@@ -254,7 +254,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # utilize os sqls do lab6 como scripts de inicio do mysql
     docker run --rm -d  -v ./db:/var/lib/mysql -v./lab6/:/docker-entrypoint-initdb.d/  --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 mysql:latest
-    # Conecte no banco 
+    # Conecte no banco
     mysql -pmy-secret-pw -uroot -h 127.0.0.1 <<EOF
     use guess_game;
     select * from jogos;
@@ -304,7 +304,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     COPY ./www/ /var/www/html
     # Alterando porta de 80 para 8080                           |
     #                                               V
-    ENTRYPOINT [ "python3", "-m", "http.server", "8080" ] 
+    ENTRYPOINT [ "python3", "-m", "http.server", "8080" ]
     ```
 
 4. Construindo a imagem com tag 02
@@ -336,7 +336,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     COPY ./www/ /var/www/html
     # Alterando porta de 80 para 8080               |
     #                                               V
-    ENTRYPOINT [ "python3", "-m", "http.server", "8080" ] 
+    ENTRYPOINT [ "python3", "-m", "http.server", "8080" ]
     ```
 
     ```bash
@@ -358,7 +358,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     $ docker image ls
-    
+
     REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
     py-web        03        fe2b3c002799   2 hours ago     160MB
     ```
@@ -379,7 +379,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     $ docker build . –t lab8:01
     $ docker image ls
-    
+
     REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
     py-web        04        fe2b3c002799   1 hours ago     160MB
     Lab8:01       01        fcd86ff8ce8c   1 minute ago    160MB
@@ -399,7 +399,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ docker login
     Username: meuemail@dominio.com
     Password: ************
-    WARNING! Your password will be stored unencrypted in 
+    WARNING! Your password will be stored unencrypted in
     Login Succeeded
     ```
 
@@ -421,7 +421,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     $ docker build . –t lab8:02
     $ docker image ls
-    
+
     REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
     mynamespace/py-web   04        fe2b3c002799   1 hours ago     160MB
     lab8:01              02        d2c94e258dcb   1 minute ago    160MB
@@ -469,7 +469,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```Dockerfile
     FROM ubuntu:22.04
     LABEL mantainer=fams@linuxplace.com.br
-    RUN apt update -y 
+    RUN apt update -y
     RUN apt install --no-install-recommends -y golang-go
     WORKDIR  /src
     COPY main.go /src
@@ -623,7 +623,7 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     WORKDIR  /src
     COPY src/ /src
     RUN  go mod tidy && CGO_ENABLED=0 GOOS=linux go build -o httpserver main.go
-    
+
     # Segundo estágio
     FROM scratch
     COPY --from=build /src/httpserver /usr/local/bin/httpserver
