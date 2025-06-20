@@ -157,7 +157,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
     ip link set veth0 netns /root/namespaces/net
     # Definir um ip para a rede
     ip addr add 10.23.0.1/30 dev veth1
-    # Carregar a interface 
+    # Carregar a interface
     ip link set dev veth1 up
    ```
 
@@ -168,7 +168,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
     ip addr add 10.23.0.2/30 dev veth0
     # inicializar a interface
     ip link set veth0 up
-    # Teste de rede 
+    # Teste de rede
     ping 10.23.0.1
 
    ```
@@ -233,7 +233,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
        ```bash
         # Va para diretório do cgroup raiz
         cd /sys/fs/cgroup
-        # crie um subdiretorio para representar o novo subgrupo 
+        # crie um subdiretorio para representar o novo subgrupo
         sudo mkdir grupo-0
         # entre no novo grupo e veja os controles com ls
         cd grupo-0
@@ -253,7 +253,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
         # vá para onde está o consumidor de memória
        cd labX
         # crie um novo shell para não limitar o atual
-        bash 
+        bash
         # obtenha o PID do shell utilizado
        echo $$
        ```
@@ -316,7 +316,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
       # vá para onde está o consumidor de recursos
       cd labX
       # crie um novo shell para não limitar o atual
-      bash 
+      bash
       # obtenha o PID do shell utilizado
       echo $$
       ```
@@ -362,13 +362,13 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
 
    ```bash
    docker logs -n 5 lab6_busybox
-   ```  
+   ```
 
 3. Ver os logs dos ultimos 10s
 
    ```bash
    docker logs --since 10s lab6_busybox
-   ```  
+   ```
 
 4. Ver os logs até 30s atrás
 
