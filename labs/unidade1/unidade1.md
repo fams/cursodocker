@@ -19,7 +19,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ docker container create --name mybash bash:latest
     ```
 
-2. Verificar so containers  do seu sistema. Observe que o container criado não está em execução
+2. Verificar os containers do seu sistema. Observe que o container criado não está em execução
 
     ```bash
     # Mostrar os containers em execução
@@ -32,10 +32,10 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 3. Iniciando o container
 
     ```bash
-    # Inicar  o container mybash
+    # Iniciar o container mybash
     $ docker start mybash
 
-    # Verifique novamente se o container está em exeução
+    # Verifique novamente se o container está em execução
     $ docker ps
     ```
 
@@ -51,7 +51,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     bash-5.2#
 
     # Sair do container com ele anexado
-    # (Ctrl+P Ctrl+Q)         # <- sequencia de dettach
+    # (Ctrl+P Ctrl+Q)         # <- sequência de dettach
     $ docker ps               # mostra os containers em execução
     ```
 
@@ -61,7 +61,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Executa o comando ps -ef no container a partir da imagem bash:latest
     $ docker run bash:latest ps –ef
     $ docker ps -a
-    # Executar um container com --rm, solicitando remoção apos o fim da execução
+    # Executar um container com --rm, solicitando remoção após o fim da execução
     $ docker run --rm bash:latest ps –ef
     $ docker ps -a
     ```
@@ -81,7 +81,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     bash-5.2#
 
     # Sair do container com ele anexado
-    # (Ctrl+P Ctrl+Q)           # <- sequencia de dettach
+    # (Ctrl+P Ctrl+Q)         # <- sequência de dettach
     $ docker ps               # mostra os containers em execução
     ```
 
@@ -145,7 +145,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ touch /tmp/hostfile.txt
     # Executar um container
     $ docker run -it bash
-    # Verificar a não existência no sistema rais
+    # Verificar a não existência no sistema raiz
     bash-5.2$ ls /tmp
     ```
 
@@ -154,9 +154,9 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # Criar um arquivo no /tmp do container
     bash-5.2$# touch /tmp/containerfile.txt
-    # Ctrl+P Ctrl+Q (dettash)
+    # Ctrl+P Ctrl+Q (dettach)
 
-    # Verificar a inexistência do arquivo containerfile.txt no nost
+    # Verificar a inexistência do arquivo containerfile.txt no host
     $ ls /tmp
     ```
 
@@ -166,7 +166,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    # Diretorio mydir no host
    $ mkdir mydir
    $ touch mydir/myhostfile.txt
-   # -v monta o diretorio mydir do host no /mydir do container
+   # -v monta o diretório mydir do host no /mydir do container
    $ docker run –it --rm –v ./mydir:/mydir bash
    # ls /mydir
    # touch /mydir/mycontainerfile.txt
@@ -179,8 +179,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
 ### Objetivo: Utilizando rede no container
 
-1. Criando um container com uma imagem nginx. A imagem com o nome nginx puro, ira utilizar uma imagem do hub.docker.com, sem namespace e o tag será o default _latest_.
-   Parâmetro -d inicia o container desanexado do console do docker client. A imagem ser
+1. Criando um container com uma imagem nginx. A imagem com o nome nginx puro, irá utilizar uma imagem do hub.docker.com, sem namespace e o tag será o default _latest_.
+   Parâmetro -d inicia o container desanexado do console do docker client.
 
     ```bash
     docker run –d --name mynginx nginx
@@ -194,15 +194,15 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     fdd7c763a066  nginx     "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   80/tcp
     ```
 
-2. Veja que o container declara servir algo na porta 80/tcp. vamos tentar aceçá-lo
+2. Veja que o container declara servir algo na porta 80/tcp. vamos tentar acessá-lo
 
     ```bash
     curl http://localhost
     ```
 
-    Como vc pode ver não está acessível. O motivo é que apesar de exposta a porta, ela não está _publicada_     para o host
+    Como você pode ver, não está acessível. O motivo é que apesar de exposta a porta, ela não está _publicada_ para o host
 
-3. Faca a mesma chamada curl de dentro do container
+3. Faça a mesma chamada curl de dentro do container
 
     ```bash
     # Iniciando um processo /bin/bash (-i) com um terminal (-t) no container mynginx criado anteriormente
@@ -218,7 +218,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 4. Publicando a porta exposta pelo container para o host
 
     ```bash
-    # Iniciando um container nginx publicando a porta 80 do container atravéz da porta 8080 do host.
+    # Iniciando um container nginx publicando a porta 80 do container através da porta 8080 do host.
     $  docker run -d --publish 8080:80 nginx
     # Acessando o container externament
     $ curl http://localhost:8080
@@ -229,12 +229,12 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
 ## LAB 5
 
-### Objetivo: Servir paginas locais com o NGINX
+### Objetivo: Servir páginas locais com o NGINX
 
 1. no lab5
 
     ```bash
-    # Mount Read0Only
+    # Mount ReadOnly
     $  docker run --name my-nginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx
     $ curl localhost:8080
     ```
@@ -252,7 +252,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 2. Execute o banco mysql com diretório local e iniciando o banco
 
     ```bash
-    # utilize os sqls do lab6 como scripts de inicio do mysql
+    # utilize os SQLs do lab6 como scripts de inicio do mysql
     docker run --rm -d  -v ./db:/var/lib/mysql -v./lab6/:/docker-entrypoint-initdb.d/  --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 mysql:latest
     # Conecte no banco
     mysql -pmy-secret-pw -uroot -h 127.0.0.1 <<EOF
@@ -291,7 +291,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker stop my-py-web-01
     ```
 
-3. Edite o Dockerfile e re-construa a imagem. Altere a porta do webserver para 8080
+3. Edite o Dockerfile e reconstrua a imagem. Altere a porta do webserver para 8080
 
     ```Dockerfile
     FROM ubuntu:22.04
@@ -363,7 +363,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     py-web        03        fe2b3c002799   2 hours ago     160MB
     ```
 
-2. Crie outro tag para a imagem
+2. Crie outra tag para a imagem
 
     ```bash
     docker tag -t py-web:04 py-web:03
@@ -386,14 +386,14 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```
 
 4. Crie uma tag para envio para o repositório.
-   Aqui você deve ter acesso ao seu namespace no docker Hub Cadastrado na aula de instalação. Troque o mynamespace para o seu namespace do docker HUB.
+   Aqui você deve ter acesso ao seu namespace no Docker Hub Cadastrado na aula de instalação. Troque o mynamespace para o seu namespace do Docker Hub.
 
     ```bash
     docker tag mynamespace/py-web:04 py-web
     docker push
     ```
 
-5. Faça login no repositório. Se você estiver usando o docker desktop, o login já estará feito.
+5. Faça login no repositório. Se você estiver usando o Docker Desktop, o login já estará feito.
 
     ```bash
     $ docker login
@@ -411,7 +411,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker image ls
     ```
 
-7. Edite o Dockerfile para utilizar a imagem do docker hub e recrie a imagem
+7. Edite o Dockerfile para utilizar a imagem do Docker Hub e recrie a imagem
 
     ```Dockerfile
     FROM fams/py-web:04
@@ -440,7 +440,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker build . -t lab9:01 -f Dockerfile-1
     ```
 
-2. Execute a imagem e teste o funcionamento. Você pode utiliar o browser no lugar do curl se quiser visulizar a páginas
+2. Execute a imagem e teste o funcionamento. Você pode utilizar o browser no lugar do curl se quiser visulizar a página
 
     ```bash
     docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
@@ -448,7 +448,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker stop lab9-01
     ```
 
-3. Edite o index.hml em www, troque a linha 45 de 9 para 9.1 e recrie a imagem
+3. Edite o index.html em www, troque a linha 45 de 9 para 9.1 e recrie a imagem
 
     ```html
     ...
@@ -557,7 +557,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
      => => naming to docker.io/library/lab9:02                                                                               0.0s
     ```
 
-    Repare que somente as camadas da copia foram recriadas
+    Repare que somente as camadas da cópia foram recriadas
 
 7. Vamos otimizar o Dockerfile para ter menos camadas.
    1. Concatene comandos shell seguidos com && para que sejam um único comando
@@ -584,7 +584,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
         mv main.go go.mod src
         ```
 
-   3. Edite o Dockerfile para fazer uma única cópia. Estamos intencionalmente separando a cópia do programa go para a copia da pagina html
+   3. Edite o Dockerfile para fazer uma única cópia. Estamos intencionalmente separando a cópia do programa go para a cópia da pagina html
 
         ```Dockerfile
         FROM ubuntu:22.04
@@ -657,6 +657,6 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 
     Veja que a imagem lab10 é significamente menor que a imagem lab9. Isso acontece porque usamos uma imagem _scratch_ como base para nossa imagem. Uma imagem scratch não tem bibliotecas, somente os arquivos mínimos como /etc/passwd e /etc/hosts.
 
-     O sistema operacional e toda a suite de compilação só foram usadas no primeiro estágio com nome de _build_. No segundo estágio, somente o binário foi copiado para a imagem.
+    O sistema operacional e toda a suite de compilação só foram usados no primeiro estágio com nome de _build_. No segundo estágio, somente o binário foi copiado para a imagem.
 
-    Esse procedimento com imagem _scratch_ é possível porque o _GO_ possui uma compilaçõ estática, isso é, não depende de bibliotecas. É possivel fazer algo semelhante para outras linguagens, como por exemplo _java_ onde no primeiro estágio _build_ temos a _JDK_ e no segundo estágio somente a _JRE_.
+    Esse procedimento com imagem _scratch_ é possível porque o _GO_ possui uma compilação estática, isso é, não depende de bibliotecas. É possivel fazer algo semelhante para outras linguagens, como por exemplo _java_, onde no primeiro estágio _build_ temos a _JDK_ e no segundo estágio somente a _JRE_.
