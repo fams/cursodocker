@@ -10,7 +10,7 @@
 
 1. **Criar um Diretório para o Projeto:**
    - Crie um diretório para o seu projeto.
-  
+
    ```bash
    mkdir lab1
    cd lab1
@@ -91,7 +91,7 @@
 
    ```bash
    docker-compose exec redis redis-cli
-   
+
    127.0.0.1:6379> set chave "valor"
    127.0.0.1:6379> get chave
    127.0.0.1:6379> exit
@@ -103,7 +103,7 @@
     ```bash
     docker-compose exec db mysql -u root -p
     # Use 'exemplo' como senha
-    
+
     mysql> SHOW DATABASES;
     ```
 
@@ -147,13 +147,13 @@
           networks:
             - webnet
           # Dependência do contador adicionada
-          depends_on: 
+          depends_on:
             - flask
-          
+
       flask:
           build: contador # diretório ond está o serviço contador
           environment:
-            - REDIS_HOST=redis # <- Note o uso de variáveis de ambiente a serem interpretadas pelo serviço,  
+            - REDIS_HOST=redis # <- Note o uso de variáveis de ambiente a serem interpretadas pelo serviço,
             - REDIS_PORT=6379
           depends_on:
             - redis
@@ -191,7 +191,7 @@
    docker-compose ps
    ```
 
-8. **Verifique se o serviço web está balanceando a carga entre os flask** 
+8. **Verifique se o serviço web está balanceando a carga entre os flask**
 
    ```bash
    curl http://localhost:8080/contador #repita várias vezes
