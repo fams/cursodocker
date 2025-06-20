@@ -2,7 +2,7 @@
 
 ## Observação
 
-**Lembre-se que o docker desktop possui o compose integrado ao comando docker, invocando-o com `docker compose`. Antigas instalações utilizarão o `docker-compose`
+**Lembre-se que o Docker Desktop possui o compose integrado ao comando docker, invocando-o com `docker compose`. Antigas instalações utilizarão o `docker-compose`
 
 ## Lab 1
 
@@ -136,7 +136,7 @@
     COPY nginx.conf /etc/nginx/conf.d/default.conf
     ```
 
-3. **Modifique o docker-compose.yml para adiconar o serviço contador provido pelo lab2 e adcionar a referencia no web**
+3. **Modifique o docker-compose.yml para adiconar o serviço contador provido pelo lab2 e adicionar a referência no web**
 
     ```yaml
     ...
@@ -151,9 +151,9 @@
             - flask
 
       flask:
-          build: contador # diretório ond está o serviço contador
+          build: contador # diretório onde está o serviço contador
           environment:
-            - REDIS_HOST=redis # <- Note o uso de variáveis de ambiente a serem interpretadas pelo serviço,
+            - REDIS_HOST=redis # <- Note o uso de variáveis de ambiente a serem interpretadas pelo serviço
             - REDIS_PORT=6379
           depends_on:
             - redis
