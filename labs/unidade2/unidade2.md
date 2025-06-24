@@ -76,7 +76,7 @@ Você vai precisar de uma máquina Linux para esses LABS.
 
 ## lab 2
 
-### Objetivo: Testar os namespaces de PID REDE e IPC
+### Objetivo: Testar os namespaces de PID, REDE e IPC
 
 Continuando do anterior
 
@@ -101,7 +101,7 @@ Continuando do anterior
     unshare -npf --mount-proc=/proc /bin/bash
     # Listando a tabela de rotas do contêiner
     ip route list
-    # Listando as conexões exitestentes
+    # Listando as conexões existentes
     netstat -anp
     # executando um ping para a internet
     ping 8.8.8.8
@@ -116,7 +116,7 @@ Continuando do anterior
     ipcmk --shmem 4096
     # Liste os recursos
     ipcs
-    # crie a namescpace de IPC
+    # crie a namespace de IPC
     unshare -ipf --mount-proc=proc /bin/bash
     # Liste os recursos na namespace
     ipcs
@@ -127,9 +127,9 @@ Continuando do anterior
 
 ### Objetivo: Demonstrar o uso da comunicação entre namespaces
 
-Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo para executar os comandos
+Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo para executar os comandos
 
-1. _No Terminal 2_, cCrie uma ancora de filesystem para suas namespaces.
+1. _No Terminal 2_, Crie uma âncora de filesystem para suas namespaces.
 
    ```bash
    # como root
@@ -157,7 +157,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
     ip link set veth0 netns /root/namespaces/net
     # Definir um ip para a rede
     ip addr add 10.23.0.1/30 dev veth1
-    # Carregar a interface 
+    # Carregar a interface
     ip link set dev veth1 up
    ```
 
@@ -168,7 +168,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
     ip addr add 10.23.0.2/30 dev veth0
     # inicializar a interface
     ip link set veth0 up
-    # Teste de rede 
+    # Teste de rede
     ping 10.23.0.1
 
    ```
@@ -215,14 +215,14 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
     1. Usando cgroup v1
 
         ```bash
-        # Va para diretório do cgroup de memória
+        # vá para diretório do cgroup de memória
         cd /sys/fs/cgroup/memory
-        # crie um subdiretorio para representar o subgrupo de memória
+        # crie um subdiretório para representar o subgrupo de memória
         sudo mkdir grupo-0
         # entre no novo grupo e veja os controles com ls
         cd grupo-0
         ls
-        # defina o limite de memória em 20 megas
+        # defina o limite de memória em 20MB
         echo $((20 * 1024 * 1024 ))| sudo tee memory.limit_in_bytes
         # verifique o limite de memória
         cat memory.limit_in_bytes
@@ -231,14 +231,14 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
     2. Usando o cgroup v2
 
        ```bash
-        # Va para diretório do cgroup raiz
+        # vá para diretório do cgroup raiz
         cd /sys/fs/cgroup
-        # crie um subdiretorio para representar o novo subgrupo 
+        # Crie um subdiretório para representar o novo subgrupo
         sudo mkdir grupo-0
         # entre no novo grupo e veja os controles com ls
         cd grupo-0
         ls
-        # defina o limite de memória em 20 megas
+        # defina o limite de memória em 20MB
         echo $((20 * 1024 * 1024 ))| sudo tee memory.max
         # verifique o limite de memória
         cat memory.max
@@ -253,7 +253,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
         # vá para onde está o consumidor de memória
        cd labX
         # crie um novo shell para não limitar o atual
-        bash 
+        bash
         # obtenha o PID do shell utilizado
        echo $$
        ```
@@ -279,7 +279,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
        ```bash
         ./waste-resource -memory-hog 1
         echo $?
-        ./waste-resource -memroy-hog 3
+        ./waste-resource -memory-hog 3
         echo $?
         # saia do processo limitado
         exit
@@ -316,7 +316,7 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
       # vá para onde está o consumidor de recursos
       cd labX
       # crie um novo shell para não limitar o atual
-      bash 
+      bash
       # obtenha o PID do shell utilizado
       echo $$
       ```
@@ -358,17 +358,17 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
    sleep 60
    ```
 
-2. Ver os 5 ultimos logs
+2. Ver os 5 últimos logs
 
    ```bash
    docker logs -n 5 lab6_busybox
-   ```  
+   ```
 
-3. Ver os logs dos ultimos 10s
+3. Ver os logs dos últimos 10s
 
    ```bash
    docker logs --since 10s lab6_busybox
-   ```  
+   ```
 
 4. Ver os logs até 30s atrás
 
@@ -419,16 +419,16 @@ Você precisará de dois terminais. O primeiro na namnespace de rede. o Segundo 
 3. Acesse os dados de outro contêiner
 
    ```bash
-   docker volume ls #verifique o nome dos conteienrs
+   docker volume ls #verifique o nome dos contêineres
    docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
-   $ echo "Inside Conatainer id $(hostname)" > /data4/lab71.txt
+   $ echo "Inside Container id $(hostname)" > /data4/lab71.txt
    $ cat /data/lab71.txt
    $ cat /data2/lab71.txt
    $ cat /data3/lab71.txt
    exit
    ```
 
-4. Liste os volumes, os conteiners que os acessam e tente removê-los. Reflita o que aconteceu e remova-os conteiners
+4. Liste os volumes, os contêineres que os acessam e tente removê-los. Reflita o que aconteceu e remova-os contêineres
 
    ```bash
    docker volume ls
