@@ -1,15 +1,15 @@
 FROM ubuntu:22.04
 LABEL mantainer=fams@linuxplace.com.br
-WORKDIR  /src
+WORKDIR /src
 COPY main.go /src
 COPY go.mod /src
-RUN apt update -y 
+COPY ./www/ /var/www/html
+RUN apt update -y
 RUN apt install --no-install-recommends -y golang-go
 RUN go mod tidy
 RUN go build -o httpserver main.go
 RUN cp httpserver /usr/local/sbin
 ENV PATH=$PATH:/usr/local/bin
-COPY ./www/ /var/www/html
-WORKDIR  /var/www/html
+WORKDIR /var/www/html
 EXPOSE 8000
 ENTRYPOINT [ "httpserver" ]
