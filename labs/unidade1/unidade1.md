@@ -26,7 +26,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ docker ps
 
     # Mostrar todos os containers criados
-    $ docker ps –a
+    $ docker ps -a
     ```
 
 3. Iniciando o container
@@ -42,6 +42,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 4. O container criado não ficou em execução. Vamos agora criar e executá-lo no modo interativo
 
     ```bash
+    # Remover o container anterior
+    $ docker rm mybash
     # Criar o container em modo interativo.
     # -i indica o modo interativo, o -t cria um tty para o container
     $ docker container create -i -t --name mybash bash:latest
@@ -59,11 +61,18 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Executa o comando ps -ef no container a partir da imagem bash:latest
-    $ docker run bash:latest ps –ef
+    $ docker run bash:latest ps -ef
     $ docker ps -a
     # Executar um container com --rm, solicitando remoção após o fim da execução
-    $ docker run --rm bash:latest ps –ef
+    $ docker run --rm bash:latest ps -ef
     $ docker ps -a
+    ```
+
+6. Remover os containers
+
+    ```bash
+    $ docker stop mybash --timeout 1
+    $ docker container prune --force
     ```
 
 ## LAB 2
@@ -111,13 +120,16 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ docker exec -it mybash /usr/local/bin/bash
     bash-5.2#
     # Listar os processos no container
-    bash-5.2# ps –ef
+    bash-5.2# ps -ef
     bash-5.2# exit
     ```
 
 5. Executando um comando com variáveis de ambiente
 
     ```bash
+    # Parar e remover o container anterior
+    docker stop mybash --timeout 1
+    docker rm mybash
     # -e indica a criação da variável POSGRAD com valor PUC no container
     $ docker run -it --rm -e POSGRAD=PUC --name mybash bash:latest
     # Verifique o conteúdo da variável no container
@@ -134,6 +146,13 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ docker ps
     ```
 
+7. Remover os containers
+
+    ```bash
+    $ docker stop mynginx
+    $ docker container prune --force
+    ```
+
 ## LAB 3
 
 ### Objetivo: Verificar a separação do sistema de arquivos do container para o host
@@ -144,7 +163,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Criando um arquivo no /tmp do sistema host
     $ touch /tmp/hostfile.txt
     # Executar um container
-    $ docker run -it bash
+    $ docker run -it --name mybash bash
     # Verificar a não existência no sistema raiz
     bash-5.2$ ls /tmp
     ```
@@ -167,13 +186,20 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    $ mkdir mydir
    $ touch mydir/myhostfile.txt
    # -v monta o diretório mydir do host no /mydir do container
-   $ docker run –it --rm –v ./mydir:/mydir bash
+   $ docker run -it --rm -v ./mydir:/mydir bash
    # ls /mydir
    # touch /mydir/mycontainerfile.txt
    # exit
    # Verifique que agora existe o arquivo no host
    $ ls ./mydir
    ```
+
+4. Remover os containers
+
+    ```bash
+    $ docker stop mybash --timeout 1
+    $ docker container prune --force
+    ```
 
 ## LAB 4
 
@@ -183,8 +209,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    Parâmetro -d inicia o container desanexado do console do docker client.
 
     ```bash
-    docker run –d --name mynginx nginx
-    docker ps
+    $ docker run -d --name mynginx nginx
+    $ docker ps
     ```
 
     Você verá algo semelhante a:
@@ -197,7 +223,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 2. Veja que o container declara servir algo na porta 80/tcp. vamos tentar acessá-lo
 
     ```bash
-    curl http://localhost
+    $ curl http://localhost
     ```
 
     Como você pode ver, não está acessível. O motivo é que apesar de exposta a porta, ela não está _publicada_ para o host
@@ -206,25 +232,25 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Iniciando um processo /bin/bash (-i) com um terminal (-t) no container mynginx criado anteriormente
-    $ docker exec --it mynginx -- /bin/bash
+    $ docker exec -it mynginx /bin/bash
     # Acessando a porta 80 local
     bash-5.2$# curl http://localhost
     bash-5.2$# exit
     # Pare e remova o container
-    docker stop mynginx
-    docker rm mynginx
+    $ docker stop mynginx
+    $ docker rm mynginx
     ```
 
 4. Publicando a porta exposta pelo container para o host
 
     ```bash
     # Iniciando um container nginx publicando a porta 80 do container através da porta 8080 do host.
-    $  docker run -d --publish 8080:80 nginx
+    $ docker run -d --name mynginx --publish 8080:80 nginx
     # Acessando o container externament
     $ curl http://localhost:8080
     # Parando e removendo o container
-    docker stop mynginx
-    docker rm mynginx
+    $ docker stop mynginx
+    $ docker rm mynginx
     ```
 
 ## LAB 5
@@ -235,8 +261,15 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Mount ReadOnly
-    $  docker run --name my-nginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx
+    $ docker run --name mynginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx
     $ curl localhost:8080
+    ```
+
+2. Remover os containers
+
+    ```bash
+    $ docker stop mynginx
+    $ docker rm mynginx
     ```
 
 ## LAB 6
@@ -246,16 +279,16 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Instale o cliente mysql
 
     ```bash
-    apt install -y mysql-client
+    $ apt install -y mysql-client
     ```
 
 2. Execute o banco mysql com diretório local e iniciando o banco
 
     ```bash
     # utilize os SQLs do lab6 como scripts de inicio do mysql
-    docker run --rm -d  -v ./db:/var/lib/mysql -v./lab6/:/docker-entrypoint-initdb.d/  --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 mysql:latest
+    $ docker run --rm -d -v ./db:/var/lib/mysql -v./lab6/:/docker-entrypoint-initdb.d/ --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 mysql:latest
     # Conecte no banco
-    mysql -pmy-secret-pw -uroot -h 127.0.0.1 <<EOF
+    $ mysql -pmy-secret-pw -uroot -h 127.0.0.1 <<EOF
     use guess_game;
     select * from jogos;
     EOF
@@ -265,10 +298,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     docker stop mysql-container
-    docker rm mysql-container
     ```
-
-4. Inicie o mysql utilizando o mesmo container de dados
 
 ## LAB 7
 
@@ -277,7 +307,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Criando uma imagem docker
 
     ```bash
-    $ cd labs/lab7
+    $ cd labs/unidade1/lab7
     $ cat Dockerfile
     # -t <imagename>:<version>
     $ docker build . -t py-web:01
@@ -286,7 +316,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 2. Executando a imagem
 
     ```bash
-    docker run --rm –d --publish 8080:80 --name my-py-web-01 py-web:01
+    docker run --rm -d --publish 8080:80 --name my-py-web-01 py-web:01
     curl http://localhost:8080
     docker stop my-py-web-01
     ```
@@ -343,7 +373,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 6. Executando e testando a conexão:
 
     ```bash
-    docker run –d --publish 8080:8080 --rm --name my-py-web-02 py-web:02
+    docker run -d --publish 8080:8080 --rm --name my-py-web-02 py-web:02
     curl http://localhost:8080
     docker stop my-py-web-02
     ```
@@ -380,7 +410,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```
 
     ```bash
-    docker docker build . -t py-web:03
+    docker build . -t py-web:03
     ```
 
 9. Execute a imagem e teste
@@ -391,6 +421,13 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
     curl http://localhost:<porta publicada>
     docker stop py-web:03
+    ```
+
+8. Remover os containers
+
+    ```bash
+    $ docker stop my-py-web-03
+    $ docker container prune --force
     ```
 
 ## LAB 8
@@ -409,34 +446,22 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 2. Crie outra tag para a imagem
 
     ```bash
-    docker tag -t py-web:04 py-web:03
+    docker tag py-web:03 py-web:04
     ```
 
 3. Crie a imagem do lab8 a partir da imagem do lab7
 
-    ```Dockerfile
-    FROM fams/py-web:04
-    COPY ./www-2/ /var/www/html
-    ```
-
     ```bash
-    $ docker build . –t lab8:01
+    $ cd labs/unidade1/lab8
+    $ docker build . -t lab8:01
     $ docker image ls
 
     REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
     py-web        04        fe2b3c002799   1 hours ago     160MB
-    Lab8:01       01        fcd86ff8ce8c   1 minute ago    160MB
+    lab8          01        fcd86ff8ce8c   1 minute ago    160MB
     ```
 
-4. Crie uma tag para envio para o repositório.
-   Aqui você deve ter acesso ao seu namespace no Docker Hub Cadastrado na aula de instalação. Troque o mynamespace para o seu namespace do Docker Hub.
-
-    ```bash
-    docker tag mynamespace/py-web:04 py-web
-    docker push
-    ```
-
-5. Faça login no repositório. Se você estiver usando o Docker Desktop, o login já estará feito.
+4. Faça login no repositório. Se você estiver usando o Docker Desktop, o login já estará feito.
 
     ```bash
     $ docker login
@@ -446,23 +471,31 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     Login Succeeded
     ```
 
+5. Crie uma tag para envio para o repositório.
+   Aqui você deve ter acesso ao seu namespace no Docker Hub cadastrado na aula de instalação. Troque o mynamespace para o seu namespace do Docker Hub.
+
+    ```bash
+    $ docker tag py-web:04 mynamespace/py-web:04
+    $ docker push mynamespace/py-web:04
+    ```
+
 6. Apague a imagem local
 
     ```bash
-    docker rm py-web:04
-    docker rm mynamespace/py-web:04
-    docker image ls
+    $ docker image rm py-web:04
+    $ docker image rm mynamespace/py-web:04
+    $ docker image ls
     ```
 
 7. Edite o Dockerfile para utilizar a imagem do Docker Hub e recrie a imagem
 
     ```Dockerfile
-    FROM fams/py-web:04
-    COPY ./www /var/www/html
+    FROM mynamespace/py-web:04
+    COPY ./www-2/ /var/www/html
     ```
 
     ```bash
-    $ docker build . –t lab8:02
+    $ docker build . -t lab8:02
     $ docker image ls
 
     REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
@@ -479,16 +512,16 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Construa a imagem do lab9. Nesse lab utilizaremos mais de um Dockerfile
 
     ```bash
-    cd labs/lab9
-    docker build . -t lab9:01 -f Dockerfile-1
+    $ cd labs/unidade1/lab9
+    $ docker build . -t lab9:01 -f Dockerfile-1
     ```
 
 2. Execute a imagem e teste o funcionamento. Você pode utilizar o browser no lugar do curl se quiser visulizar a página
 
     ```bash
-    docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
-    curl http://localhost:8080
-    docker stop lab9-01
+    $ docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
+    $ curl http://localhost:8080
+    $ docker stop lab9-01
     ```
 
 3. Edite o index.html em www, troque a linha 45 de 9 para 9.1 e recrie a imagem
@@ -500,9 +533,10 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```
 
     ```bash
-    docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
-    curl http://localhost:8080
-    docker stop lab9-01
+    $ docker build . -t lab9:01 -f Dockerfile-1
+    $ docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
+    $ curl http://localhost:8080
+    $ docker stop lab9-01
     ```
 
     **Perceba que todos os passos do build foram refeitos, inclusive a instalação do golang.**
@@ -514,7 +548,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     LABEL mantainer=fams@linuxplace.com.br
     RUN apt update -y
     RUN apt install --no-install-recommends -y golang-go
-    WORKDIR  /src
+    WORKDIR /src
     COPY main.go /src
     COPY go.mod /src
     RUN go mod tidy
@@ -522,13 +556,13 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     RUN cp httpserver /usr/local/sbin
     ENV PATH=$PATH:/usr/local/bin
     COPY ./www/ /var/www/html
-    WORKDIR  /var/www/html
+    WORKDIR /var/www/html
     EXPOSE 8000
     ENTRYPOINT [ "httpserver" ]
     ```
 
     ```bash
-    docker build -f Dockerfile-2 -t lab9:02 .
+    $ docker build -f Dockerfile-2 -t lab9:02 .
     ```
 
     Veja as camadas que foram geradas com o novo dockerfile
@@ -575,47 +609,47 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     $ docker history lab9:02
-    [+] Building 0.4s (16/16) FINISHED                                                                             docker:default
-     => [internal] load build definition from Dockerfile-2                                                                   0.0s
-     => => transferring dockerfile: 423B                                                                                     0.0s
-     => [internal] load .dockerignore                                                                                        0.0s
-     => => transferring context: 2B                                                                                          0.0s
-     => [internal] load metadata for docker.io/library/ubuntu:22.04                                                          0.2s
-     => [ 1/11] FROM docker.io/library/ubuntu:22.04@sha256:19478ce7fc2ffbce89df29fea5725a8d12e57de52eb9ea570890dc5852aac1ac  0.0s
-     => [internal] load build context                                                                                        0.0s
-     => => transferring context: 1.96kB                                                                                      0.0s
-     => CACHED [ 2/11] RUN apt update -y                                                                                     0.0s
-     => CACHED [ 3/11] RUN apt install --no-install-recommends -y golang-go                                                  0.0s
-     => CACHED [ 4/11] WORKDIR  /src                                                                                         0.0s
-     => CACHED [ 5/11] COPY main.go /src                                                                                     0.0s
-     => CACHED [ 6/11] COPY go.mod /src                                                                                      0.0s
-     => CACHED [ 7/11] RUN go mod tidy                                                                                       0.0s
-     => CACHED [ 8/11] RUN go build -o httpserver main.go                                                                    0.0s
-     => CACHED [ 9/11] RUN cp httpserver /usr/local/sbin                                                                     0.0s
-     => [10/11] COPY ./www/ /var/www/html                                                                                    0.0s
-     => [11/11] WORKDIR  /var/www/html                                                                                       0.0s
-     => exporting to image                                                                                                   0.1s
-     => => exporting layers                                                                                                  0.1s
-     => => writing image sha256:275ab47b99eacf423020e0bcf5a8913875e3e5d141143c6e598a63a58d5647d2                             0.0s
-     => => naming to docker.io/library/lab9:02                                                                               0.0s
+    IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
+    d92198e67f61   7 seconds ago   ENTRYPOINT ["httpserver"]                       0B        buildkit.dockerfile.v0
+    <missing>      7 seconds ago   EXPOSE map[8000/tcp:{}]                         0B        buildkit.dockerfile.v0
+    <missing>      7 seconds ago   WORKDIR /var/www/html                           0B        buildkit.dockerfile.v0
+    <missing>      7 seconds ago   COPY ./www/ /var/www/html # buildkit            1.84kB    buildkit.dockerfile.v0
+    <missing>      2 minutes ago   ENV PATH=/usr/local/sbin:/usr/local/bin:/usr…   0B        buildkit.dockerfile.v0
+    <missing>      2 minutes ago   RUN /bin/sh -c cp httpserver /usr/local/sbin…   6.45MB    buildkit.dockerfile.v0
+    <missing>      2 minutes ago   RUN /bin/sh -c go build -o httpserver main.g…   6.46MB    buildkit.dockerfile.v0
+    <missing>      3 minutes ago   RUN /bin/sh -c go mod tidy # buildkit           21B       buildkit.dockerfile.v0
+    <missing>      3 minutes ago   COPY go.mod /src # buildkit                     21B       buildkit.dockerfile.v0
+    <missing>      3 minutes ago   COPY main.go /src # buildkit                    376B      buildkit.dockerfile.v0
+    <missing>      3 minutes ago   WORKDIR /src                                    0B        buildkit.dockerfile.v0
+    <missing>      3 minutes ago   RUN /bin/sh -c apt install --no-install-reco…   431MB     buildkit.dockerfile.v0
+    <missing>      3 minutes ago   RUN /bin/sh -c apt update -y # buildkit         63.9MB    buildkit.dockerfile.v0
+    <missing>      3 minutes ago   LABEL mantainer=fams@linuxplace.com.br          0B        buildkit.dockerfile.v0
+    <missing>      3 weeks ago     /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+    <missing>      3 weeks ago     /bin/sh -c #(nop) ADD file:82f38ebced7b27563…   77.9MB
+    <missing>      3 weeks ago     /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+    <missing>      3 weeks ago     /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+    <missing>      3 weeks ago     /bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH     0B
+    <missing>      3 weeks ago     /bin/sh -c #(nop)  ARG RELEASE                  0B
     ```
 
     Repare que somente as camadas da cópia foram recriadas
 
-7. Vamos otimizar o Dockerfile para ter menos camadas.
+7. Vamos otimizar o Dockerfile-2 para ter menos camadas.
    1. Concatene comandos shell seguidos com && para que sejam um único comando
 
         ```Dockerfile
         FROM ubuntu:22.04
         LABEL mantainer=fams@linuxplace.com.br
         RUN apt update -y && apt install --no-install-recommends -y golang-go
-        WORKDIR  /src
-        COPY src/ /src
+        WORKDIR /src
+        COPY main.go /src
         COPY go.mod /src
-        RUN go mod tidy && go build -o httpserver main.go && cp httpserver /usr/local/sbin
+        RUN go mod tidy
+        RUN go build -o httpserver main.go
+        RUN cp httpserver /usr/local/sbin
         ENV PATH=$PATH:/usr/local/bin
         COPY ./www/ /var/www/html
-        WORKDIR  /var/www/html
+        WORKDIR /var/www/html
         EXPOSE 8000
         ENTRYPOINT [ "httpserver" ]
         ```
@@ -623,11 +657,11 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    2. Mova os arquivos do programa go para um diretório src.
 
         ```bash
-        mkdir src
-        mv main.go go.mod src
+        $ mkdir src
+        $ mv main.go go.mod src
         ```
 
-   3. Edite o Dockerfile para fazer uma única cópia. Estamos intencionalmente separando a cópia do programa go para a cópia da pagina html
+   3. Edite o Dockerfile-2 para fazer uma única cópia. Estamos intencionalmente separando a cópia do programa go para a cópia da pagina html
 
         ```Dockerfile
         FROM ubuntu:22.04
@@ -646,8 +680,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    4. Reconstrua a imagem e veja a diminuição do número de camadas
 
         ```bash
-        docker build . -t lab9:3
-        docker history -t lab9:3
+        $ docker build . -f Dockerfile-2 -t lab9:3
+        $ docker history lab9:3
         ```
 
 ## LAB 10
@@ -663,9 +697,9 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     FROM ubuntu:22.04 AS build
     LABEL mantainer=fams@linuxplace.com.br
     RUN apt update -y && apt install --no-install-recommends -y golang-go
-    WORKDIR  /src
+    WORKDIR /src
     COPY src/ /src
-    RUN  go mod tidy && CGO_ENABLED=0 GOOS=linux go build -o httpserver main.go
+    RUN go mod tidy && CGO_ENABLED=0 GOOS=linux go build -o httpserver main.go
 
     # Segundo estágio
     FROM scratch
@@ -680,7 +714,8 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 2. Execute o docker build
 
     ```bash
-    docker build . -t lab10:01
+    $ cd labs/unidade1/lab10
+    $ docker build . -t lab10:01
     ```
 
 3. Liste as imagens e veja a diferença de tamanho
