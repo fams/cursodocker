@@ -291,29 +291,56 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker stop my-py-web-01
     ```
 
-3. Edite o Dockerfile e reconstrua a imagem. Altere a porta do webserver para 8080
+3. Execute agora a imagem, publicando todas as portas -P
+
+    ```bash
+    docker run --rm -P -d --name my-py-web-01 py-web:01
+    ```
+
+    Verifique a porta publicada
+
+    ```bash
+    docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'    
+    ```
+
+    Na coluna PORTS da linha correspondente ao seu container encontrará algo semelhante a isso:
+
+    0.0.0.0:32768->80/tcp
+
+    A porta Publicada é o que está entre o ":" e o "->"/. Faça o teste na porta publicada
+
+    ```bash
+    curl http://localhost:<porta publicada>
+    ```
+
+    Encerre o container
+
+    ```bash
+    docker stop my-py-web-01
+    ```
+
+4. Edite o Dockerfile e reconstrua a imagem. Altere a porta do webserver para 8080
 
     ```Dockerfile
     FROM ubuntu:22.04
     LABEL mantainer=fams@linuxplace.com.br
     SHELL [ "/bin/bash", "-c" ]
-    ENV FAMS=FERNANDO
     WORKDIR  /var/www/html
     EXPOSE 80
     RUN apt-get update -y && apt-get install --no-install-recommends python3 -y
     COPY ./www/ /var/www/html
-    # Alterando porta de 80 para 8080                           |
+    # Alterando porta de 80 para 8080               |
     #                                               V
     ENTRYPOINT [ "python3", "-m", "http.server", "8080" ]
     ```
 
-4. Construindo a imagem com tag 02
+5. Construindo a imagem com tag 02
 
     ```bash
     docker build . -t py-web:02
     ```
 
-5. Executando e testando a conexão:
+6. Executando e testando a conexão:
 
     ```bash
     docker run –d --publish 8080:8080 --rm --name my-py-web-02 py-web:02
@@ -321,7 +348,20 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker stop my-py-web-02
     ```
 
-6. Depois de verificar a falha, edite o Dockerfile novamente e altere a diretiva EXPOSE e reconstrua a imagem
+    Verá que a conexão funciona normalmete, o EXPOSE não impede que a portaa seja publicada.
+
+7. Tente fazer o mesmo com o -P ou --publish-all
+
+    ```bash
+    docker run –d -P --rm --name my-py-web-02 py-web:02
+    curl http://localhost:8080
+    # Verifique a porta que foi publicada
+    docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
+    curl http://localhost:<porta publicada>
+    docker stop my-py-web-02
+    ```
+
+8. Depois de verificar a falha, pois o -P exportou a porta não condizente com o serviço, edite o Dockerfile novamente e altere a diretiva EXPOSE e reconstrua a imagem
 
     ```Dockerfile
     FROM ubuntu:22.04
@@ -343,11 +383,14 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker docker build . -t py-web:03
     ```
 
-7. Execute a imagem e teste
+9. Execute a imagem e teste
 
     ```bash
-    docker run –d --publish 8080:8080 py-web:03
-    curl http://localhost:8080
+    docker run –P -d py-web:03
+    # Verifique a porta que foi publicada
+    docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
+    curl http://localhost:<porta publicada>
+    docker stop py-web:03
     ```
 
 ## LAB 8
@@ -655,7 +698,7 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     <none>       <none>    dd36894cd0e3   37 minutes ago   574MB
     ```
 
-    Veja que a imagem lab10 é significamente menor que a imagem lab9. Isso acontece porque usamos uma imagem _scratch_ como base para nossa imagem. Uma imagem scratch não tem bibliotecas, somente os arquivos mínimos como /etc/passwd e /etc/hosts.
+    Veja que a imagem lab10 é significamente menor que a imagem lab9. Isso acontece porque usamos uma imagem _scratch_ como base para nossa imagem. Uma imagem scratch é literalmente vazia, na verdade nem mesmo existe uma imagem scratch. Ela é uma palavra reservada que executa uma não operação de tamanho 0.
 
     O sistema operacional e toda a suite de compilação só foram usados no primeiro estágio com nome de _build_. No segundo estágio, somente o binário foi copiado para a imagem.
 
