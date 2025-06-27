@@ -1,7 +1,6 @@
 FROM ubuntu:22.04
 LABEL mantainer=fams@linuxplace.com.br
 WORKDIR  /var/www/html
-EXPOSE 8080
 EXPOSE 80
 RUN apt-get update -y && apt-get install --no-install-recommends python3 -y
 COPY ./www/ /var/www/html

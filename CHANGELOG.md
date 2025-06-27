@@ -13,8 +13,8 @@ unidade2.md
 
 unidade2.md
 
-- Corrigido informação sobre imagens scratchs serem minimas de arquivos sendo literalmente vazias,
-- Removidos ENV expúrios nos dockerefile exemplo.
+- Corrigido informação sobre imagens scratchs serem minimas de arquivos, são na verdade literalmente vazias.
+- Removidos ENV expúrios nos Dockerfile exemplo.
 - Corrigido lab relacionado ao EXPOSE. Serve de informação para o usuário e publish-all
 
 Agradecimentos ao @wandersonwhcr
