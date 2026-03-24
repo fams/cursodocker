@@ -1,9 +1,9 @@
 FROM ubuntu:22.04 AS build
 LABEL mantainer=fams@linuxplace.com.br
 RUN apt update -y && apt install --no-install-recommends -y golang-go
-WORKDIR  /src
+WORKDIR /src
 COPY src/ /src
-RUN  go mod tidy && CGO_ENABLED=0 GOOS=linux go build -o httpserver main.go
+RUN go mod tidy && CGO_ENABLED=0 GOOS=linux go build -o httpserver main.go
 
 FROM scratch
 COPY --from=build /src/httpserver /usr/local/bin/httpserver
