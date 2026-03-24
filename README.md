@@ -32,6 +32,10 @@ Segue abaixo a minha sugestão de realização das atividades desta unidade:
  
 **Os labs estão disponíveis em https://github.com/fams/cursodocker**
 
+- [Unidade 1](labs/unidade1/unidade1.md)
+- [Unidade 2](labs/unidade2/unidade2.md)
+- [Unidade 3](labs/unidade3/unidade3.md)
+
 
 Por fim, realize a Atividade Objetiva de Fixação/Revisão para verificar como está o seu desempenho nesta disciplina. Caso tenha dúvidas não hesite em discuti-las com os seus colegas e entrar em contato conosco através do AVA.
 
