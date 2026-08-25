@@ -34,7 +34,7 @@ unidade2.md
 
 unidade3.md
 
-- Adicionados Labs 3 a 8 sobre recursos avançados do Docker Compose: healthcheck com dependência condicional (`depends_on: condition`), `.env`/`env_file`, overrides de ambiente (dev/prod), `profiles`, `secrets`, e políticas de `restart`.
+- Adicionados Labs 3 a 8 sobre recursos avançados do Docker Compose: healthcheck com dependência condicional (`depends_on: condition`), `.env`/`env_file`, overrides de ambiente (dev/prod), `profiles`, `secrets`, e políticas de `restart` (com nota sobre `docker stop`/`kill` manual suspender a política de restart em qualquer modo, e sobre a necessidade de `sh -c` para rodar `kill` dentro da imagem do `flask`).
 
 ### Fixed
 
@@ -43,8 +43,3 @@ unidade1.md (fecha #11)
 - Lab 7, item 9: adicionado `--name` ao `docker run` e corrigido o `docker stop` subsequente, que tentava parar pelo nome da imagem em vez do nome do container.
 - Lab 9: padronizada a ordem dos argumentos do `docker build` (flags antes do contexto `.`) em todas as ocorrências do lab.
 - Lab 7, itens 7 e 9: substituído en-dash (`–`) por hífen (`-`) em `docker run` (ex.: `–P` virou `-P`), que fazia o Docker interpretar a flag como nome de imagem e falhar com "invalid reference format". Encontrado ao validar o fix do #11 em ambiente real.
-
-unidade3.md
-
-- Lab 8: adicionado `sh -c` em torno dos comandos `kill`/`kill -9` executados via `docker compose exec`, já que a imagem `python:3.9-slim` do serviço `flask` não tem o binário `kill` — sem isso o comando falha com "executable file not found in $PATH".
-- Lab 8, item 4: corrigida a afirmação de que `restart: always` reinicia o container automaticamente após um `docker stop` manual. Pelo comportamento documentado do Docker, uma parada manual (`docker stop`/`docker kill`) suspende a política de restart em **qualquer** modo, até o daemon reiniciar ou o container ser reiniciado manualmente. O lab agora demonstra e explica esse comportamento corretamente, com um novo item 5 mostrando o caso em que `always` de fato reinicia (processo terminando sozinho).
