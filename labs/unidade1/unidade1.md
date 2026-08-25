@@ -738,3 +738,212 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     O sistema operacional e toda a suite de compilação só foram usados no primeiro estágio com nome de _build_. No segundo estágio, somente o binário foi copiado para a imagem.
 
     Esse procedimento com imagem _scratch_ é possível porque o _GO_ possui uma compilação estática, isso é, não depende de bibliotecas. É possivel fazer algo semelhante para outras linguagens, como por exemplo _java_, onde no primeiro estágio _build_ temos a _JDK_ e no segundo estágio somente a _JRE_.
+
+## LAB 11
+
+### Objetivo: Acelerar builds com cache mounts do BuildKit
+
+1. **Crie o diretório do lab11**
+
+    ```bash
+    mkdir lab11 && cd lab11
+    cp -R ../lab10/src .
+    ```
+
+2. **Escreva um Dockerfile habilitando a sintaxe estendida do BuildKit**
+
+    ```Dockerfile
+    # syntax=docker/dockerfile:1
+    FROM golang:1.22 AS build
+    WORKDIR /src
+    COPY src/ /src
+    RUN --mount=type=cache,target=/root/go/pkg/mod \
+        --mount=type=cache,target=/root/.cache/go-build \
+        go mod tidy && go build -o httpserver main.go
+
+    FROM scratch
+    COPY --from=build /src/httpserver /usr/local/bin/httpserver
+    ENTRYPOINT [ "/usr/local/bin/httpserver" ]
+    ```
+
+3. **Faça o primeiro build e cronometre**
+
+    ```bash
+    time docker build -t lab11-cache:01 .
+    ```
+
+4. **Force a reconstrução (mude um comentário no `main.go`) e cronometre de novo**
+
+    ```bash
+    time docker build -t lab11-cache:02 .
+    ```
+
+    Compare com o mesmo Dockerfile sem `--mount=type=cache` (baixando módulos do zero a cada build). Note que o cache de módulos/`go build` persiste **entre builds**, mesmo sem aparecer no `docker history` nem inflar a imagem final.
+
+5. **Inspecione os caches do BuildKit**
+
+    ```bash
+    docker builder du
+    docker builder prune --filter type=exec.cachemount
+    ```
+
+## LAB 12
+
+### Objetivo: Construir imagens multi-plataforma com `buildx`
+
+1. **Crie e ative um builder `buildx`**
+
+    ```bash
+    docker buildx create --name multiarch --use
+    docker buildx inspect --bootstrap
+    ```
+
+2. **Reaproveite o Dockerfile do Lab 11**
+
+    ```bash
+    cd ../lab11
+    ```
+
+3. **Construa para duas arquiteturas e publique em um repositório local (reaproveite o registry do Lab 10 da Unidade 2)**
+
+    ```bash
+    docker buildx build \
+      --platform linux/amd64,linux/arm64 \
+      -t localhost:5000/lab11-multi:01 \
+      --push .
+    ```
+
+4. **Inspecione o manifest list gerado**
+
+    ```bash
+    docker buildx imagetools inspect localhost:5000/lab11-multi:01
+    # Note as duas entradas de plataforma dentro do mesmo tag
+    ```
+
+5. **Rode a imagem e confira que o Docker seleciona a plataforma correta automaticamente**
+
+    ```bash
+    docker run --rm localhost:5000/lab11-multi:01
+    ```
+
+## LAB 13
+
+### Objetivo: Parametrizar builds com `ARG` e injetar credenciais de build sem deixar rastro na imagem
+
+1. **Crie o diretório do lab13**
+
+    ```bash
+    mkdir ../lab13 && cd ../lab13
+    ```
+
+2. **Use `ARG` para parametrizar a versão da imagem base**
+
+    ```Dockerfile
+    # syntax=docker/dockerfile:1
+    ARG GO_VERSION=1.22
+    FROM golang:${GO_VERSION} AS build
+    WORKDIR /src
+    COPY . .
+    RUN go build -o app .
+    ```
+
+    ```bash
+    docker build --build-arg GO_VERSION=1.23 -t lab13:01 .
+    ```
+
+3. **Reproduza o problema clássico: um segredo passado por `ARG`/`ENV` fica gravado na camada e no histórico**
+
+    ```Dockerfile
+    ARG API_TOKEN
+    ENV API_TOKEN=$API_TOKEN
+    RUN curl -H "Authorization: Bearer $API_TOKEN" https://exemplo.com
+    ```
+
+    ```bash
+    docker build --build-arg API_TOKEN=segredo123 -t lab13-inseguro:01 .
+    docker history --no-trunc lab13-inseguro:01 | grep segredo123
+    # O token aparece exposto no histórico da imagem
+    ```
+
+4. **Corrija usando `RUN --mount=type=secret`, que nunca persiste em camada**
+
+    ```Dockerfile
+    # syntax=docker/dockerfile:1
+    RUN --mount=type=secret,id=api_token \
+        curl -H "Authorization: Bearer $(cat /run/secrets/api_token)" https://exemplo.com
+    ```
+
+    ```bash
+    echo "segredo123" > token.txt
+    docker build --secret id=api_token,src=token.txt -t lab13-seguro:01 .
+    docker history --no-trunc lab13-seguro:01 | grep segredo123
+    # Nada é encontrado: o segredo não fica gravado em nenhuma camada
+    ```
+
+## LAB 14
+
+### Objetivo: Reduzir camadas de build com `COPY --link` e bind mounts de contexto
+
+1. **Copie o lab13 para o lab14**
+
+    ```bash
+    cp -R ../lab13 ../lab14 && cd ../lab14
+    ```
+
+2. **Compare `COPY` tradicional com `COPY --link`**
+
+    ```Dockerfile
+    # syntax=docker/dockerfile:1
+    FROM golang:1.22 AS build
+    WORKDIR /src
+    RUN --mount=type=bind,source=.,target=/src \
+        --mount=type=cache,target=/root/go/pkg/mod \
+        go build -o /out/app .
+
+    FROM scratch
+    COPY --link --from=build /out/app /app
+    ENTRYPOINT [ "/app" ]
+    ```
+
+3. **Construa a imagem e veja no `docker history` que o `RUN` não precisou de um `COPY` intermediário do código-fonte para o contexto de build**
+
+    ```bash
+    docker build -t lab14:01 .
+    docker history lab14:01
+    ```
+
+4. **Altere só o binário final (não o código-fonte) e reconstrua**, observando que, com `--link`, o Docker consegue reaproveitar/anexar camadas de forma independente em vez de invalidar tudo abaixo do `COPY`.
+
+## LAB 15
+
+### Objetivo: Gerar SBOM e proveniência de build (introdução a supply-chain)
+
+1. **Reaproveite o build multi-plataforma do Lab 12 (`buildx`)**
+
+    ```bash
+    cd ../lab11
+    ```
+
+2. **Construa habilitando SBOM e provenance**
+
+    ```bash
+    docker buildx build \
+      --sbom=true \
+      --provenance=true \
+      -t localhost:5000/lab11-attest:01 \
+      --push .
+    ```
+
+3. **Inspecione o SBOM (Software Bill of Materials) gerado**
+
+    ```bash
+    docker buildx imagetools inspect localhost:5000/lab11-attest:01 --format '{{ json .SBOM }}'
+    ```
+
+4. **Inspecione a proveniência (como e onde a imagem foi construída)**
+
+    ```bash
+    docker buildx imagetools inspect localhost:5000/lab11-attest:01 --format '{{ json .Provenance }}'
+    ```
+
+5. **Discuta**: por que essas informações importam para auditoria e rastreabilidade de uma cadeia de build (o que foi usado para montar a imagem e de onde ela veio), mesmo sem uma ferramenta de scan de vulnerabilidades neste lab.
