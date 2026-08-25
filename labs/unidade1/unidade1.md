@@ -416,11 +416,11 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 9. Execute a imagem e teste
 
     ```bash
-    docker run –P -d py-web:03
+    docker run –P -d --name my-py-web-03 py-web:03
     # Verifique a porta que foi publicada
     docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
     curl http://localhost:<porta publicada>
-    docker stop py-web:03
+    docker stop my-py-web-03
     ```
 
 8. Remover os containers
@@ -513,7 +513,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     $ cd labs/unidade1/lab9
-    $ docker build . -t lab9:01 -f Dockerfile-1
+    $ docker build -f Dockerfile-1 -t lab9:01 .
     ```
 
 2. Execute a imagem e teste o funcionamento. Você pode utilizar o browser no lugar do curl se quiser visulizar a página
@@ -533,7 +533,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```
 
     ```bash
-    $ docker build . -t lab9:01 -f Dockerfile-1
+    $ docker build -f Dockerfile-1 -t lab9:01 .
     $ docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
     $ curl http://localhost:8080
     $ docker stop lab9-01
@@ -680,7 +680,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    4. Reconstrua a imagem e veja a diminuição do número de camadas
 
         ```bash
-        $ docker build . -f Dockerfile-2 -t lab9:3
+        $ docker build -f Dockerfile-2 -t lab9:3 .
         $ docker history lab9:3
         ```
 
