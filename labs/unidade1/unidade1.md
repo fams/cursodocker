@@ -946,4 +946,4 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     docker buildx imagetools inspect localhost:5000/lab11-attest:01 --format '{{ json .Provenance }}'
     ```
 
-5. **Discuta**: por que essas informações importam para auditoria e rastreabilidade de uma cadeia de build (o que foi usado para montar a imagem e de onde ela veio), mesmo sem uma ferramenta de scan de vulnerabilidades neste lab.
+5. **Discuta**: por que essas informações importam para auditoria e rastreabilidade de uma cadeia de build — o SBOM lista o que foi usado para montar a imagem, a proveniência mostra de onde ela veio.

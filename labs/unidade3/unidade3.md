@@ -511,7 +511,7 @@
    docker compose ps flask  # permanece parado
    ```
 
-   > `kill` não existe como binário na imagem `python:3.9-slim` usada pelo `flask` — por isso o comando precisa ser executado via `sh -c`, que usa o `kill` embutido do shell. Rodar `docker compose exec flask kill 1` diretamente falha com `executable file not found in $PATH`.
+   A imagem `python:3.9-slim` usada pelo `flask` não tem o binário `kill` — por isso o comando roda via `sh -c`, usando o `kill` embutido do shell. Rodar `docker compose exec flask kill 1` diretamente falha com `executable file not found in $PATH`.
 
 3. **Mude para `on-failure` e derrube o processo com um código de erro**
 
@@ -528,7 +528,7 @@
    docker compose ps flask  # foi reiniciado
    ```
 
-   > Use sempre `docker compose exec` (executa dentro do container) e não `docker kill`/`docker stop` do host para este teste: o Docker trata uma parada feita pelo host como intencional e **não** aciona a política de restart, mesmo com `on-failure`.
+   Use sempre `docker compose exec` (executa dentro do container) e não `docker kill`/`docker stop` do host para este teste: o Docker trata uma parada feita pelo host como intencional e **não** aciona a política de restart, mesmo com `on-failure`.
 
 4. **Mude para `always` e pare o container manualmente**
 
@@ -545,7 +545,7 @@
    docker compose ps -a flask  # continua parado (Exited)
    ```
 
-   > Mesmo com `restart: always`, um `docker stop`/`docker kill` feito pelo host **não** é revertido automaticamente — o Docker trata isso como uma parada intencional. A política de restart só entra em ação quando o processo principal do container termina sozinho (crash ou saída), ou quando o daemon do Docker é reiniciado.
+   Mesmo com `restart: always`, um `docker stop`/`docker kill` feito pelo host **não** é revertido automaticamente — o Docker trata isso como uma parada intencional. A política de restart só entra em ação quando o processo principal do container termina sozinho (crash ou saída), ou quando o daemon do Docker é reiniciado.
 
 5. **Compare com o processo terminando sozinho, que `always` reinicia mesmo sem erro**
 
