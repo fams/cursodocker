@@ -383,7 +383,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 7. Tente fazer o mesmo com o -P ou --publish-all
 
     ```bash
-    docker run –d -P --rm --name my-py-web-02 py-web:02
+    docker run -d -P --rm --name my-py-web-02 py-web:02
     curl http://localhost:8080
     # Verifique a porta que foi publicada
     docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
@@ -416,7 +416,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 9. Execute a imagem e teste
 
     ```bash
-    docker run –P -d --name my-py-web-03 py-web:03
+    docker run -P -d --name my-py-web-03 py-web:03
     # Verifique a porta que foi publicada
     docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
     curl http://localhost:<porta publicada>
