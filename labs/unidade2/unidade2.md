@@ -644,3 +644,221 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 4. **Analisar o Comportamento:**
    - Observe que o comando `ping` falha enquanto os comandos `nslookup` e `wget` ainda funcionam, indicando que as capacidades de DNS e TCP estão intactas.
+
+## Lab 14
+
+### Objetivo: Assinar e verificar imagens com Docker Content Trust (DCT), garantindo que só se faça pull de imagens confiáveis
+
+1. **Reaproveite o login e o namespace do Docker Hub do Lab 8 da Unidade 1**
+
+   ```bash
+   docker login
+   # Username: <seu namespace do Docker Hub>
+   ```
+
+2. **Construa e envie uma imagem simples sem Content Trust, para comparação**
+
+   ```bash
+   mkdir lab14 && cd lab14
+   echo "FROM busybox" > Dockerfile
+   echo 'CMD ["echo", "sem confianca"]' >> Dockerfile
+   docker build -t <seu_namespace>/curso-dct:sem-assinatura .
+   docker push <seu_namespace>/curso-dct:sem-assinatura
+   ```
+
+3. **Habilite o Docker Content Trust**
+
+   ```bash
+   export DOCKER_CONTENT_TRUST=1
+   ```
+
+4. **Construa e publique uma nova tag com o Content Trust habilitado**
+
+   ```bash
+   docker build -t <seu_namespace>/curso-dct:confiavel .
+   docker push <seu_namespace>/curso-dct:confiavel
+   ```
+
+   No primeiro `push` com DCT habilitado, o Docker gera duas chaves e pede senha (passphrase) para cada uma:
+   - **Root key**: raiz de confiança do seu usuário, compartilhada entre todos os repositórios. **Deve ser guardada com muito cuidado** — se for perdida, não há como recuperar o controle do repositório sem intervenção do operador do registry.
+   - **Repository key**: específica desse repositório, assina as tags publicadas.
+
+   As chaves ficam salvas em `~/.docker/trust/`.
+
+5. **Tente baixar a tag sem assinatura com o Content Trust habilitado**
+
+   ```bash
+   docker pull <seu_namespace>/curso-dct:sem-assinatura
+   # Erro: "No valid trust data for sem-assinatura" — o Docker recusa a imagem por falta de assinatura
+   ```
+
+6. **Baixe a tag assinada**
+
+   ```bash
+   docker pull <seu_namespace>/curso-dct:confiavel
+   # O pull funciona e o Docker mostra a verificação da assinatura antes de baixar
+   ```
+
+7. **Inspecione os metadados de confiança da imagem**
+
+   ```bash
+   docker trust inspect --pretty <seu_namespace>/curso-dct:confiavel
+   ```
+
+8. **Desabilite o Content Trust e repita o pull da tag sem assinatura**
+
+   ```bash
+   unset DOCKER_CONTENT_TRUST
+   docker pull <seu_namespace>/curso-dct:sem-assinatura
+   # Agora funciona normalmente: sem DCT habilitado, o Docker não valida assinatura nenhuma
+   ```
+
+9. **Reflita**: o Content Trust não é um recurso do registry, é uma verificação do **cliente** Docker. Um pipeline de CI/CD que não habilita `DOCKER_CONTENT_TRUST` continuaria aceitando imagens não assinadas mesmo que elas existam lado a lado com imagens confiáveis.
+
+## Lab 15
+
+### Objetivo: Fazer backup de um volume nomeado usando um container efêmero
+
+1. **Reaproveite o cenário do Lab 7 desta unidade (ou use um volume já existente)**
+
+   ```bash
+   docker volume create lab15_volume
+   docker run --rm -v lab15_volume:/data busybox \
+     sh -c 'echo "dado importante" > /data/arquivo.txt'
+   ```
+
+2. **Faça o backup do volume para um `.tar.gz` no host**
+
+   ```bash
+   mkdir -p backups
+   docker run --rm \
+     -v lab15_volume:/data \
+     -v $(pwd)/backups:/backup \
+     busybox tar czf /backup/lab15_volume.tar.gz -C /data .
+   ```
+
+3. **Verifique o conteúdo do backup sem precisar de um volume**
+
+   ```bash
+   tar tzf backups/lab15_volume.tar.gz
+   ```
+
+## Lab 16
+
+### Objetivo: Restaurar um volume a partir de um backup
+
+1. **Crie um novo volume vazio**
+
+   ```bash
+   docker volume create lab16_volume_restaurado
+   ```
+
+2. **Restaure o backup gerado no Lab 15 dentro do novo volume**
+
+   ```bash
+   docker run --rm \
+     -v lab16_volume_restaurado:/data \
+     -v $(pwd)/backups:/backup \
+     busybox tar xzf /backup/lab15_volume.tar.gz -C /data
+   ```
+
+3. **Valide que os dados batem com o volume original**
+
+   ```bash
+   docker run --rm -v lab16_volume_restaurado:/data busybox cat /data/arquivo.txt
+   ```
+
+4. **Limpar o ambiente**
+
+   ```bash
+   docker volume rm lab15_volume lab16_volume_restaurado
+   ```
+
+## Lab 17
+
+### Objetivo: Fazer backup e restore consistentes de um banco em execução (mysqldump), em vez de copiar o datadir "a frio"
+
+1. **Suba um container MySQL com um volume nomeado**
+
+   ```bash
+   docker volume create lab17_mysql_data
+   docker run --rm -d --name lab17-mysql \
+     -v lab17_mysql_data:/var/lib/mysql \
+     -e MYSQL_ROOT_PASSWORD=exemplo \
+     mysql:5.7
+   sleep 20
+   ```
+
+2. **Crie uma base e uma tabela de teste**
+
+   ```bash
+   docker exec -i lab17-mysql mysql -uroot -pexemplo <<EOF
+   CREATE DATABASE curso;
+   USE curso;
+   CREATE TABLE alunos (id INT PRIMARY KEY, nome VARCHAR(50));
+   INSERT INTO alunos VALUES (1, 'Fernando');
+   EOF
+   ```
+
+3. **Por que não copiar o datadir do volume diretamente**: tente o backup "a frio" com o banco vivo e note o risco
+
+   ```bash
+   docker run --rm -v lab17_mysql_data:/data busybox tar czf - -C /data . > backups/lab17-cru.tar.gz
+   # Arquivos do InnoDB podem ser copiados em estado inconsistente enquanto há escritas em andamento
+   ```
+
+4. **Faça o backup correto com `mysqldump`, que gera um dump lógico consistente**
+
+   ```bash
+   docker exec lab17-mysql mysqldump -uroot -pexemplo --all-databases > backups/lab17.sql
+   ```
+
+5. **Simule uma perda de dados e restaure a partir do dump**
+
+   ```bash
+   docker exec -i lab17-mysql mysql -uroot -pexemplo -e "DROP DATABASE curso;"
+   docker exec -i lab17-mysql mysql -uroot -pexemplo < backups/lab17.sql
+   docker exec -i lab17-mysql mysql -uroot -pexemplo -e "SELECT * FROM curso.alunos;"
+   ```
+
+6. **Limpar o ambiente**
+
+   ```bash
+   docker stop lab17-mysql
+   docker volume rm lab17_mysql_data
+   ```
+
+## Lab 18
+
+### Objetivo: Migrar um volume entre hosts usando backup em tar e o registry local
+
+1. **Reaproveite o backup do Lab 15 (`backups/lab15_volume.tar.gz`) ou gere um novo a partir de qualquer volume**
+
+2. **Transfira o arquivo de backup para outra máquina (ou outro diretório simulando outro host)**
+
+   ```bash
+   scp backups/lab15_volume.tar.gz usuario@outro-host:/tmp/
+   # ou, localmente, simule com:
+   mkdir -p /tmp/outro-host && cp backups/lab15_volume.tar.gz /tmp/outro-host/
+   ```
+
+3. **No host de destino, crie o volume e restaure o backup (mesmo procedimento do Lab 16)**
+
+   ```bash
+   docker volume create lab18_volume_migrado
+   docker run --rm \
+     -v lab18_volume_migrado:/data \
+     -v /tmp/outro-host:/backup \
+     busybox tar xzf /backup/lab15_volume.tar.gz -C /data
+   ```
+
+4. **Alternativa para imagens/aplicações (não apenas dados de volume): use o `labregistry` desta unidade (Lab 10) para publicar uma imagem que já embarca os dados necessários, e faça o `pull` no host de destino**
+
+   ```bash
+   docker tag minha-app:01 localhost:5000/minha-app:01
+   docker push localhost:5000/minha-app:01
+   # no host de destino
+   docker pull localhost:5000/minha-app:01
+   ```
+
+5. **Reflita**: para dados de volume (estado), o caminho é backup/restore via tar ou dump lógico; para a aplicação (imagem), o caminho é o registry. Não confunda os dois quando planejar uma migração.
