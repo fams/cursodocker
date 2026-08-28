@@ -373,8 +373,11 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 6. Executando e testando a conexão:
 
     ```bash
-    docker run -d --publish 8080:8080 --rm --name my-py-web-02 py-web:02
+    docker run –d -P --rm --name my-py-web-02 py-web:02
     curl http://localhost:8080
+    # Verifique a porta que foi publicada
+    docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
+    curl http://localhost:<porta publicada>
     docker stop my-py-web-02
     ```
 
@@ -421,13 +424,6 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker ps --format 'table {{ truncate .Names 15 }}\t{{ .Ports }}'
     curl http://localhost:<porta publicada>
     docker stop my-py-web-03
-    ```
-
-8. Remover os containers
-
-    ```bash
-    $ docker stop my-py-web-03
-    $ docker container prune --force
     ```
 
 ## LAB 8
