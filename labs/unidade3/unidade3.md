@@ -19,7 +19,7 @@
 2. **Criar um Arquivo Dockerfile:**
    - Dentro do diretório do projeto, crie um arquivo `Dockerfile` para o serviço `web`:
 
-   ```dockerfile
+   ```Dockerfile
    # Use a imagem base do Nginx
    FROM nginx:latest
 

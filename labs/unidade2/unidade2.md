@@ -565,7 +565,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 2. Baixe a imagem do bash para sua máquina e envie para seu repositório local
 
-   ```docker
+   ```bash
    docker pull bash:latest
    docker tag bash:latest localhost:5000/bash:latest
    docker push localhost:5000/bash:latest
@@ -645,7 +645,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    docker rm limited_container
    ```
 
-## Laboratório 13
+## Lab 13
 
 ### Objetivo: Aprender a aplicar políticas de segurança utilizando `--cap-drop` para remover capacidades específicas em contêineres Docker
 

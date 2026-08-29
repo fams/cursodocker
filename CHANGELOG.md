@@ -19,6 +19,15 @@ unidade1.md
 - Lab 10: adicionado o `:` que faltava em `### Objetivo`, que quebrava a extração automática do objetivo do lab em ferramentas que dependem desse padrão.
 - Lab 7, item 10: corrigida numeração duplicada (`8.` repetido em vez de `10.`).
 
+unidade2.md
+
+- Corrigido `## Laboratório 13` para `## Lab 13`, alinhando com os labs vizinhos (9-18 usam "Lab N").
+- Corrigida tag de linguagem `docker` (não é uma linguagem) para `bash` num bloco de código do Lab 10.
+
+unidade3.md
+
+- Corrigida tag de linguagem `dockerfile` (minúsculo) para `Dockerfile`, igual ao resto do arquivo.
+
 ## v1.0.1 - 2024-09-30
 
 ### Fixed
