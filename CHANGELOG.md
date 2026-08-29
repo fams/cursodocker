@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.1 - 2026-08-29
+
+### Added
+
+unidade1.md
+
+- Lab 1, item 3: adicionado `docker ps -a` após o `docker ps`, pra contrastar o switch de mostrar todos os containers com o de mostrar só os em execução.
+
 ## v1.0.1 - 2024-09-30
 
 ### Fixed

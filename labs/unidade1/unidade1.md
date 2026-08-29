@@ -37,6 +37,9 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     # Verifique novamente se o container está em execução
     $ docker ps
+
+    # Verifique agora com o switch de mostrar container em todos os estados
+    $ docker ps -a
     ```
 
 4. O container criado não ficou em execução. Vamos agora criar e executá-lo no modo interativo
