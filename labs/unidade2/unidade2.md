@@ -227,26 +227,34 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 2. Descubra a versão do cgroup em uso
 
     ```bash
-    $ mount |grep cgroup
-     # Se o cgroup for v2, vc verá uma linha para o cgroup semelhante a abaixo
-     cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
-     # Se for um cgroup v1 vera uma linha para cada control group, semelhante a abaixo
-     tmpfs on /sys/fs/cgroup type tmpfs (rw,nosuid,nodev,noexec,relatime,mode=755)
-     cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime)
-     cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)
-     cgroup on /sys/fs/cgroup/cpu type cgroup (rw,nosuid,nodev,noexec,relatime,cpu)
-     cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct)
-     cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)
-     cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)
-     cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)
-     cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
-     cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,nosuid,nodev,noexec,relatime,net_cls)
-     cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
-     cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,net_prio)
-     cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
-     cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
-     cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,rdma)
-     cgroup on /sys/fs/cgroup/misc type cgroup (rw,nosuid,nodev,noexec,relatime,misc)
+    $ mount | grep cgroup
+    ```
+
+    Se o cgroup for v2, você verá uma linha para o cgroup semelhante a abaixo:
+
+    ```output
+    cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
+    ```
+
+    Se for um cgroup v1, verá uma linha para cada control group, semelhante a abaixo:
+
+    ```output
+    tmpfs on /sys/fs/cgroup type tmpfs (rw,nosuid,nodev,noexec,relatime,mode=755)
+    cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime)
+    cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)
+    cgroup on /sys/fs/cgroup/cpu type cgroup (rw,nosuid,nodev,noexec,relatime,cpu)
+    cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct)
+    cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)
+    cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)
+    cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)
+    cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
+    cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,nosuid,nodev,noexec,relatime,net_cls)
+    cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
+    cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,net_prio)
+    cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
+    cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
+    cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,rdma)
+    cgroup on /sys/fs/cgroup/misc type cgroup (rw,nosuid,nodev,noexec,relatime,misc)
     ```
 
 3. Criando um grupo para acomodar a memória limitada
@@ -437,7 +445,10 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
    ```bash
    docker volume create lab7_volume_named
-   docker run --name lab7_container_1 --mount source=lab7_volume_named,target=/data -it  busybox
+   ```
+
+   ```bash
+   $ docker run --name lab7_container_1 --mount source=lab7_volume_named,target=/data -it  busybox
    $ echo "Inside Container id $(hostname)" >/data/lab71.txt
    $ exit
    ```
@@ -445,26 +456,31 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 2. Crie um contêiner com o volume nomeado junto ao run
 
    ```bash
-   docker run --name lab7_container_2 --mount source=lab7_volume_named2,target=/data -it busybox
+   $ docker run --name lab7_container_2 --mount source=lab7_volume_named2,target=/data -it busybox
    $ echo "Inside id $(hostname)"  > /data/lab71.txt
    $ exit
    ```
 
    ```bash
-   docker run --name lab7_container_3 -v /data -it busybox
+   $ docker run --name lab7_container_3 -v /data -it busybox
    $ echo "Inside id $(hostname)"  > /data/lab71.txt
    $ exit
+   ```
 
 3. Acesse os dados de outro contêiner
 
    ```bash
-   docker volume ls #verifique o nome dos contêineres
-   docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
+   # verifique o nome dos contêineres
+   docker volume ls
+   ```
+
+   ```bash
+   $ docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
    $ echo "Inside Container id $(hostname)" > /data4/lab71.txt
    $ cat /data/lab71.txt
    $ cat /data2/lab71.txt
    $ cat /data3/lab71.txt
-   exit
+   $ exit
    ```
 
 4. Liste os volumes, os contêineres que os acessam e tente removê-los. Reflita o que aconteceu e remova-os contêineres
@@ -611,6 +627,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```bash
    docker rm user_test
    docker rmi user_test_image
+   ```
 
 ## Lab 12
 
