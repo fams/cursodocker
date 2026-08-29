@@ -689,7 +689,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
 ## LAB 10
 
-### Objetivo Uso do multi-stage Build
+### Objetivo: Uso do multi-stage Build
 
 Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab anterior criamos imagens com o ubuntu
 

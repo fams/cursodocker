@@ -8,6 +8,12 @@ unidade1.md
 
 - Lab 1, item 3: adicionado `docker ps -a` após o `docker ps`, pra contrastar o switch de mostrar todos os containers com o de mostrar só os em execução.
 
+### Fixed
+
+unidade1.md
+
+- Lab 10: adicionado o `:` que faltava em `### Objetivo`, que quebrava a extração automática do objetivo do lab em ferramentas que dependem desse padrão.
+
 ## v1.0.1 - 2024-09-30
 
 ### Fixed
