@@ -33,6 +33,7 @@ unidade3.md
 unidade1.md
 
 - Lab 4: piloto da padronização de comando/output (Fase 3) — bloco de output marcado com a tag ` ```output `; separado em blocos o fluxo "entra no container / roda comando lá dentro / volta pro host", que antes misturava tudo com um prompt de container inconsistente (`bash-5.2$#`). Regra final do `$` (após pesquisa de boas práticas): usado só quando há output no bloco, ou quando a sequência muda de contexto de execução (host → dentro do container → host, como no passo 3); removido de blocos de comando puro sem troca de contexto, mesmo com vários comandos (passos 2 e 4).
+- Labs 1, 2 e 3: continuação da padronização de comando/output. Removido `$` de blocos de comando puro no host (sem output, sem troca de contexto). Mantido/adicionado `$` nas sequências que entram e saem de um container (`docker start -ai`, `docker attach`, `docker exec`, e os comandos digitados enquanto anexado). Removidos prompts de container inconsistentes (`bash-5.2#`, `bash-5.2$#`) — separados em blocos com uma frase de transição ("Agora você está dentro do container...") no lugar.
 
 ## v1.0.1 - 2024-09-30
 

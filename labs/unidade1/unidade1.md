@@ -10,72 +10,76 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Download da imagem
-    $ docker image pull bash:latest
+    docker image pull bash:latest
 
     # Lista imagens locais
-    $ docker image ls
+    docker image ls
 
     # Cria um container de nome mybash a partir da imagem bash:latest
-    $ docker container create --name mybash bash:latest
+    docker container create --name mybash bash:latest
     ```
 
 2. Verificar os containers do seu sistema. Observe que o container criado não está em execução
 
     ```bash
     # Mostrar os containers em execução
-    $ docker ps
+    docker ps
 
     # Mostrar todos os containers criados
-    $ docker ps -a
+    docker ps -a
     ```
 
 3. Iniciando o container
 
     ```bash
     # Iniciar o container mybash
-    $ docker start mybash
+    docker start mybash
 
     # Verifique novamente se o container está em execução
-    $ docker ps
+    docker ps
 
     # Verifique agora com o switch de mostrar container em todos os estados
-    $ docker ps -a
+    docker ps -a
     ```
 
 4. O container criado não ficou em execução. Vamos agora criar e executá-lo no modo interativo
 
     ```bash
     # Remover o container anterior
-    $ docker rm mybash
+    docker rm mybash
     # Criar o container em modo interativo.
     # -i indica o modo interativo, o -t cria um tty para o container
-    $ docker container create -i -t --name mybash bash:latest
+    docker container create -i -t --name mybash bash:latest
+    ```
 
-    # Iniciar no modo interativo e attached
+    Inicie no modo interativo e anexado — você fica dentro do shell do container:
+
+    ```bash
     $ docker start -ai mybash
-    bash-5.2#
+    ```
 
-    # Sair do container com ele anexado
-    # (Ctrl+P Ctrl+Q)         # <- sequência de dettach
-    $ docker ps               # mostra os containers em execução
+    Dê o detach sem parar o container (`Ctrl+P Ctrl+Q`). De volta no host, confirme que ele continua em execução:
+
+    ```bash
+    docker ps
     ```
 
 5. Executar todos os passos com o comando run
 
     ```bash
     # Executa o comando ps -ef no container a partir da imagem bash:latest
-    $ docker run bash:latest ps -ef
-    $ docker ps -a
+    docker run bash:latest ps -ef
+    docker ps -a
     # Executar um container com --rm, solicitando remoção após o fim da execução
-    $ docker run --rm bash:latest ps -ef
-    $ docker ps -a
+    docker run --rm bash:latest ps -ef
+    docker ps -a
     ```
 
 6. Remover os containers
 
     ```bash
-    $ docker stop mybash --timeout 1
-    $ docker container prune --force
+    docker stop mybash --timeout 1
+    docker container prune --force
     ```
 
 ## LAB 2
@@ -86,34 +90,34 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Criar o container em modo interativo
-    $ docker container create -it --name mybash bash:latest
+    docker container create -it --name mybash bash:latest
+    ```
 
-    # Iniciar o container no modo interativo e anexar-se a ele
+    Inicie no modo interativo, anexado — você fica dentro do shell do container:
+
+    ```bash
     $ docker start -ai mybash
-    bash-5.2#
+    ```
 
-    # Sair do container com ele anexado
-    # (Ctrl+P Ctrl+Q)         # <- sequência de dettach
-    $ docker ps               # mostra os containers em execução
+    Dê o detach sem parar o container (`Ctrl+P Ctrl+Q`). De volta no host:
+
+    ```bash
+    docker ps
     ```
 
 2. Anexar ao container em execução
 
     ```bash
-    # Anexar ao container
     $ docker attach mybash
-    bash-5.2$#
-
-    # dettach
-    # (Ctrl+P Ctrl+Q)
-    $
     ```
 
-3. Anexar ao container em execução
+    Dê o detach de novo (`Ctrl+P Ctrl+Q`) pra voltar ao host sem parar o container.
+
+3. Anexar ao container em execução (forma equivalente, com o motivo comentado)
 
     ```bash
     $ docker attach mybash      # anexa ao container
-    # Ctrl+P Ctrl+Q
+    # Ctrl+P Ctrl+Q para dar o detach
     ```
 
 4. Executar um segundo processo no container
@@ -121,10 +125,14 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # Executar outro processo no container
     $ docker exec -it mybash /usr/local/bin/bash
-    bash-5.2#
+    ```
+
+    Agora você está num segundo shell dentro do container. Rode:
+
+    ```bash
     # Listar os processos no container
-    bash-5.2# ps -ef
-    bash-5.2# exit
+    $ ps -ef
+    $ exit
     ```
 
 5. Executando um comando com variáveis de ambiente
@@ -133,27 +141,34 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     # Parar e remover o container anterior
     docker stop mybash --timeout 1
     docker rm mybash
-    # -e indica a criação da variável POSGRAD com valor PUC no container
+    ```
+
+    Crie e entre num container novo, já com uma variável de ambiente definida (`-e`):
+
+    ```bash
     $ docker run -it --rm -e POSGRAD=PUC --name mybash bash:latest
-    # Verifique o conteúdo da variável no container
-    bash-5.2# echo $POSGRAD
-    bash-5.2# exit
-    $
+    ```
+
+    Dentro do container, verifique o conteúdo da variável e saia:
+
+    ```bash
+    $ echo $POSGRAD
+    $ exit
     ```
 
 6. Iniciando um container desanexado, retornando o controle para o shell do host
 
     ```bash
     # -d inicia o comando desanexado do console
-    $ docker run -d --name mynginx nginx:latest
-    $ docker ps
+    docker run -d --name mynginx nginx:latest
+    docker ps
     ```
 
 7. Remover os containers
 
     ```bash
-    $ docker stop mynginx
-    $ docker container prune --force
+    docker stop mynginx
+    docker container prune --force
     ```
 
 ## LAB 3
@@ -164,44 +179,68 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Criando um arquivo no /tmp do sistema host
-    $ touch /tmp/hostfile.txt
-    # Executar um container
+    touch /tmp/hostfile.txt
+    ```
+
+    Execute um container e entre nele:
+
+    ```bash
     $ docker run -it --name mybash bash
-    # Verificar a não existência no sistema raiz
-    bash-5.2$ ls /tmp
+    ```
+
+    Dentro do container, verifique que o arquivo criado no host não existe ali:
+
+    ```bash
+    $ ls /tmp
     ```
 
 2. Criar um arquivo no container e verificar sua não existência no host
 
-    ```bash
-    # Criar um arquivo no /tmp do container
-    bash-5.2$# touch /tmp/containerfile.txt
-    # Ctrl+P Ctrl+Q (dettach)
+    Ainda dentro do container (continuando do passo anterior), crie um arquivo:
 
-    # Verificar a inexistência do arquivo containerfile.txt no host
-    $ ls /tmp
+    ```bash
+    $ touch /tmp/containerfile.txt
+    ```
+
+    Dê o detach sem parar o container (`Ctrl+P Ctrl+Q`). De volta no host, verifique que o arquivo criado no container não existe aqui:
+
+    ```bash
+    ls /tmp
     ```
 
 3. Montando arquivos locais no container (bind Mount)
 
-   ```bash
-   # Diretorio mydir no host
-   $ mkdir mydir
-   $ touch mydir/myhostfile.txt
-   # -v monta o diretório mydir do host no /mydir do container
-   $ docker run -it --rm -v ./mydir:/mydir bash
-   # ls /mydir
-   # touch /mydir/mycontainerfile.txt
-   # exit
-   # Verifique que agora existe o arquivo no host
-   $ ls ./mydir
-   ```
+    ```bash
+    # Diretorio mydir no host
+    mkdir mydir
+    touch mydir/myhostfile.txt
+    ```
+
+    Suba um container com o diretório do host montado dentro dele (`-v`):
+
+    ```bash
+    $ docker run -it --rm -v ./mydir:/mydir bash
+    ```
+
+    Dentro do container, confirme que o arquivo do host está lá, crie um novo e saia:
+
+    ```bash
+    $ ls /mydir
+    $ touch /mydir/mycontainerfile.txt
+    $ exit
+    ```
+
+    De volta no host, verifique que o arquivo criado dentro do container também aparece aqui:
+
+    ```bash
+    ls ./mydir
+    ```
 
 4. Remover os containers
 
     ```bash
-    $ docker stop mybash --timeout 1
-    $ docker container prune --force
+    docker stop mybash --timeout 1
+    docker container prune --force
     ```
 
 ## LAB 4
