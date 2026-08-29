@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.3 - 2026-08-29
+
+### Fixed
+
+unidade2.md
+
+- Lab 11, item 2: `apt-get install -y sudo` não instala mais o pacote `adduser` no `ubuntu:latest` atual (só `useradd`/`usermod` vêm por padrão) — o `adduser novo_usuario` do passo seguinte falhava com "command not found". Corrigido pra `apt-get install -y sudo adduser`. Encontrado rodando a sequência de comandos de verdade num container.
+
 ## v1.1.2 - 2026-08-29
 
 ### Added

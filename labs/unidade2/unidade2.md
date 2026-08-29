@@ -616,7 +616,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
    ```bash
    $ apt-get update
-   $ apt-get install -y sudo
+   $ apt-get install -y sudo adduser
    $ adduser novo_usuario
    $ usermod -aG sudo novo_usuario
    ```
@@ -650,8 +650,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 ### Objetivo: Entender como limitar os recursos (CPU e memória) dos contêineres Docker para melhorar a segurança e a estabilidade do sistema.
 
-1. **Crie uma imagem com o gastador de recursos do lab5
-
+1. **Crie uma imagem com o gastador de recursos do lab5**
    ```bash
    cd lab5
    docker build -t waste-resources .
