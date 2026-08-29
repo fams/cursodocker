@@ -8,6 +8,10 @@ unidade1.md
 
 - Lab 1, item 3: adicionado `docker ps -a` após o `docker ps`, pra contrastar o switch de mostrar todos os containers com o de mostrar só os em execução.
 
+unidade2.md
+
+- Lab 3: preenchida a lacuna de numeração (o arquivo pulava do lab 2 pro lab 4) com um novo lab sobre o namespace de UTS — isolamento de hostname com `unshare --uts`/`nsenter --uts`.
+
 ### Fixed
 
 unidade1.md

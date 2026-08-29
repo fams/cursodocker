@@ -123,6 +123,45 @@ Continuando do anterior
     # Saindo da namespace
     ```
 
+## lab 3
+
+### Objetivo: Testar o namespace de UTS (hostname)
+
+1. Verifique o hostname atual do host
+
+    ```bash
+    hostname
+    ```
+
+2. Crie um namespace UTS fixado num arquivo, definindo um hostname isolado dentro dele
+
+    ```bash
+    mkdir -p /var/run/ns
+    touch /var/run/ns/group1
+
+    # Cria o namespace UTS, fixa em /var/run/ns/group1 e define o hostname só dentro dele
+    unshare --uts=/var/run/ns/group1 hostname ns1
+    ```
+
+3. Entre no mesmo namespace (por outro comando, sem precisar ser filho do processo que criou) e confirme o hostname isolado
+
+    ```bash
+    nsenter --uts=/var/run/ns/group1 hostname
+    ```
+
+4. Confirme que o hostname do host não foi alterado
+
+    ```bash
+    hostname
+    ```
+
+5. Remova o namespace fixado
+
+    ```bash
+    umount /var/run/ns/group1
+    rm /var/run/ns/group1
+    ```
+
 ## lab 4
 
 ### Objetivo: Demonstrar o uso da comunicação entre namespaces
