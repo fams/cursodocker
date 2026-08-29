@@ -218,7 +218,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     Você verá algo semelhante a:
 
-    ```bash
+    ```output
     CONTAINER ID  IMAGE  COMMAND                        CREATED             STATUS                 PORTS              NAMES
     fdd7c763a066  nginx     "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   80/tcp
     ```
@@ -226,7 +226,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 2. Veja que o container declara servir algo na porta 80/tcp. vamos tentar acessá-lo
 
     ```bash
-    $ curl http://localhost
+    curl http://localhost
     ```
 
     Como você pode ver, não está acessível. O motivo é que apesar de exposta a porta, ela não está _publicada_ para o host
@@ -236,10 +236,18 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # Iniciando um processo /bin/bash (-i) com um terminal (-t) no container mynginx criado anteriormente
     $ docker exec -it mynginx /bin/bash
-    # Acessando a porta 80 local
-    bash-5.2$# curl http://localhost
-    bash-5.2$# exit
-    # Pare e remova o container
+    ```
+
+    Agora você está dentro do container. Rode:
+
+    ```bash
+    $ curl http://localhost
+    $ exit
+    ```
+
+    De volta no host, pare e remova o container:
+
+    ```bash
     $ docker stop mynginx
     $ docker rm mynginx
     ```
@@ -249,7 +257,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     # Iniciando um container nginx publicando a porta 80 do container através da porta 8080 do host.
     $ docker run -d --name mynginx --publish 8080:80 nginx
-    # Acessando o container externament
+    # Acessando o container externamente
     $ curl http://localhost:8080
     # Parando e removendo o container
     $ docker stop mynginx

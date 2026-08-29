@@ -28,6 +28,12 @@ unidade3.md
 
 - Corrigida tag de linguagem `dockerfile` (minúsculo) para `Dockerfile`, igual ao resto do arquivo.
 
+### Changed
+
+unidade1.md
+
+- Lab 4: piloto da padronização de comando/output (Fase 3) — bloco de output marcado com a tag ` ```output `; `$` mantido só em blocos com 2+ comandos distintos; removido `$` do único comando isolado do passo 2; separado em blocos o fluxo "entra no container / roda comando lá dentro / volta pro host", que antes misturava tudo com um prompt de container inconsistente (`bash-5.2$#`).
+
 ## v1.0.1 - 2024-09-30
 
 ### Fixed
