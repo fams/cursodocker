@@ -311,15 +311,15 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Mount ReadOnly
-    $ docker run --name mynginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx
-    $ curl localhost:8080
+    docker run --name mynginx -v ./www:/usr/share/nginx/html:ro -d -p 8080:80 nginx
+    curl localhost:8080
     ```
 
 2. Remover os containers
 
     ```bash
-    $ docker stop mynginx
-    $ docker rm mynginx
+    docker stop mynginx
+    docker rm mynginx
     ```
 
 ## LAB 6
@@ -329,16 +329,16 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Instale o cliente mysql
 
     ```bash
-    $ apt install -y mysql-client
+    apt install -y mysql-client
     ```
 
 2. Execute o banco mysql com diretório local e iniciando o banco
 
     ```bash
     # utilize os SQLs do lab6 como scripts de inicio do mysql
-    $ docker run --rm -d -v ./db:/var/lib/mysql -v./lab6/:/docker-entrypoint-initdb.d/ --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 mysql:latest
+    docker run --rm -d -v ./db:/var/lib/mysql -v./lab6/:/docker-entrypoint-initdb.d/ --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 mysql:latest
     # Conecte no banco
-    $ mysql -pmy-secret-pw -uroot -h 127.0.0.1 <<EOF
+    mysql -pmy-secret-pw -uroot -h 127.0.0.1 <<EOF
     use guess_game;
     select * from jogos;
     EOF
@@ -357,10 +357,10 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Criando uma imagem docker
 
     ```bash
-    $ cd labs/unidade1/lab7
-    $ cat Dockerfile
+    cd labs/unidade1/lab7
+    cat Dockerfile
     # -t <imagename>:<version>
-    $ docker build . -t py-web:01
+    docker build . -t py-web:01
     ```
 
 2. Executando a imagem
@@ -476,8 +476,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 10. Remover os containers
 
     ```bash
-    $ docker stop my-py-web-03
-    $ docker container prune --force
+    docker stop my-py-web-03
+    docker container prune --force
     ```
 
 ## LAB 8
@@ -488,7 +488,9 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     $ docker image ls
+    ```
 
+    ```output
     REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
     py-web        03        fe2b3c002799   2 hours ago     160MB
     ```
@@ -505,7 +507,9 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     $ cd labs/unidade1/lab8
     $ docker build . -t lab8:01
     $ docker image ls
+    ```
 
+    ```output
     REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
     py-web        04        fe2b3c002799   1 hours ago     160MB
     lab8          01        fcd86ff8ce8c   1 minute ago    160MB
@@ -515,6 +519,9 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     $ docker login
+    ```
+
+    ```output
     Username: meuemail@dominio.com
     Password: ************
     WARNING! Your password will be stored unencrypted in
@@ -525,16 +532,16 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    Aqui você deve ter acesso ao seu namespace no Docker Hub cadastrado na aula de instalação. Troque o mynamespace para o seu namespace do Docker Hub.
 
     ```bash
-    $ docker tag py-web:04 mynamespace/py-web:04
-    $ docker push mynamespace/py-web:04
+    docker tag py-web:04 mynamespace/py-web:04
+    docker push mynamespace/py-web:04
     ```
 
 6. Apague a imagem local
 
     ```bash
-    $ docker image rm py-web:04
-    $ docker image rm mynamespace/py-web:04
-    $ docker image ls
+    docker image rm py-web:04
+    docker image rm mynamespace/py-web:04
+    docker image ls
     ```
 
 7. Edite o Dockerfile para utilizar a imagem do Docker Hub e recrie a imagem
@@ -547,7 +554,9 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```bash
     $ docker build . -t lab8:02
     $ docker image ls
+    ```
 
+    ```output
     REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
     mynamespace/py-web   04        fe2b3c002799   1 hours ago     160MB
     lab8:01              02        d2c94e258dcb   1 minute ago    160MB
@@ -562,16 +571,16 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Construa a imagem do lab9. Nesse lab utilizaremos mais de um Dockerfile
 
     ```bash
-    $ cd labs/unidade1/lab9
-    $ docker build -f Dockerfile-1 -t lab9:01 .
+    cd labs/unidade1/lab9
+    docker build -f Dockerfile-1 -t lab9:01 .
     ```
 
 2. Execute a imagem e teste o funcionamento. Você pode utilizar o browser no lugar do curl se quiser visulizar a página
 
     ```bash
-    $ docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
-    $ curl http://localhost:8080
-    $ docker stop lab9-01
+    docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
+    curl http://localhost:8080
+    docker stop lab9-01
     ```
 
 3. Edite o index.html em www, troque a linha 45 de 9 para 9.1 e recrie a imagem
@@ -581,10 +590,10 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```
 
     ```bash
-    $ docker build -f Dockerfile-1 -t lab9:01 .
-    $ docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
-    $ curl http://localhost:8080
-    $ docker stop lab9-01
+    docker build -f Dockerfile-1 -t lab9:01 .
+    docker run -p 8080:8000 --rm -d --name lab9-01 lab9:01
+    curl http://localhost:8080
+    docker stop lab9-01
     ```
 
     **Perceba que todos os passos do build foram refeitos, inclusive a instalação do golang.**
@@ -610,13 +619,16 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     ```
 
     ```bash
-    $ docker build -f Dockerfile-2 -t lab9:02 .
+    docker build -f Dockerfile-2 -t lab9:02 .
     ```
 
     Veja as camadas que foram geradas com o novo dockerfile
 
     ```bash
     $ docker history lab9:02
+    ```
+
+    ```output
     IMAGE          CREATED          CREATED BY                                      SIZE      COMMENT
     dd36894cd0e3   43 seconds ago   ENTRYPOINT ["httpserver"]                       0B        buildkit.dockerfile.v0
     <missing>      43 seconds ago   EXPOSE map[8000/tcp:{}]                         0B        buildkit.dockerfile.v0
@@ -657,6 +669,9 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     $ docker history lab9:02
+    ```
+
+    ```output
     IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
     d92198e67f61   7 seconds ago   ENTRYPOINT ["httpserver"]                       0B        buildkit.dockerfile.v0
     <missing>      7 seconds ago   EXPOSE map[8000/tcp:{}]                         0B        buildkit.dockerfile.v0
@@ -705,8 +720,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    2. Mova os arquivos do programa go para um diretório src.
 
         ```bash
-        $ mkdir src
-        $ mv main.go go.mod src
+        mkdir src
+        mv main.go go.mod src
         ```
 
    3. Edite o Dockerfile-2 para fazer uma única cópia. Estamos intencionalmente separando a cópia do programa go para a cópia da pagina html
@@ -728,8 +743,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
    4. Reconstrua a imagem e veja a diminuição do número de camadas
 
         ```bash
-        $ docker build -f Dockerfile-2 -t lab9:3 .
-        $ docker history lab9:3
+        docker build -f Dockerfile-2 -t lab9:3 .
+        docker history lab9:3
         ```
 
 ## LAB 10
@@ -762,14 +777,17 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 2. Execute o docker build
 
     ```bash
-    $ cd labs/unidade1/lab10
-    $ docker build . -t lab10:01
+    cd labs/unidade1/lab10
+    docker build . -t lab10:01
     ```
 
 3. Liste as imagens e veja a diferença de tamanho
 
     ```bash
     $ docker images
+    ```
+
+    ```output
     REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
     lab10        01        d10b2234bcbf   2 minutes ago    6.37MB
     <none>       <none>    4dbc0d21ff07   20 minutes ago   6.43MB
