@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.2 - 2026-08-29
+
+### Added
+
+unidade2.md
+
+- Lab 4, itens 1-4: marcados com um comentário HTML `<!--term:split-h-2-->` (invisível em qualquer visualização Markdown, inclusive no GitHub) sinalizando que esses itens exigem dois terminais simultâneos apontando pro mesmo ambiente — usado por ferramentas de apoio ao curso para abrir dois consoles lado a lado nesses passos.
+
 ## v1.1.1 - 2026-08-29
 
 ### Added

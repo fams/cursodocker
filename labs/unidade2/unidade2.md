@@ -170,6 +170,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 1. _No Terminal 2_, Crie uma âncora de filesystem para suas namespaces.
 
+   <!--term:split-h-2-->
+
    ```bash
    # como root
     sudo su -
@@ -178,6 +180,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
     ```
 
 2. _No Terminal 1_, entre na namespace de rede isolada
+
+   <!--term:split-h-2-->
 
    ```bash
     unshare --net=/namespaces/001 /bin/bash
@@ -188,6 +192,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```
 
 3. _No Terminal 2_, configurar a rede no namespace 001
+
+   <!--term:split-h-2-->
 
    ```bash
     # Criar o par de vethX
@@ -201,6 +207,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```
 
 4. _No Terminal 1_, configurar a rede
+
+   <!--term:split-h-2-->
 
    ```bash
     # Atribuir ip à interface
