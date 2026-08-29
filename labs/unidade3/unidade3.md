@@ -95,7 +95,7 @@
 
    No prompt do Redis:
 
-   ```bash
+   ```prompt:127.0.0.1:6379>
    $ set chave "valor"
    $ get chave
    $ exit
@@ -112,7 +112,7 @@
 
     No prompt do MySQL:
 
-    ```bash
+    ```prompt:mysql>
     $ SHOW DATABASES;
     ```
 
