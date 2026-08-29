@@ -256,12 +256,12 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     # Iniciando um container nginx publicando a porta 80 do container através da porta 8080 do host.
-    $ docker run -d --name mynginx --publish 8080:80 nginx
+    docker run -d --name mynginx --publish 8080:80 nginx
     # Acessando o container externamente
-    $ curl http://localhost:8080
+    curl http://localhost:8080
     # Parando e removendo o container
-    $ docker stop mynginx
-    $ docker rm mynginx
+    docker stop mynginx
+    docker rm mynginx
     ```
 
 ## LAB 5

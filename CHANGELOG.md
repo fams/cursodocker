@@ -32,7 +32,7 @@ unidade3.md
 
 unidade1.md
 
-- Lab 4: piloto da padronização de comando/output (Fase 3) — bloco de output marcado com a tag ` ```output `; `$` mantido só em blocos com 2+ comandos distintos; removido `$` do único comando isolado do passo 2; separado em blocos o fluxo "entra no container / roda comando lá dentro / volta pro host", que antes misturava tudo com um prompt de container inconsistente (`bash-5.2$#`).
+- Lab 4: piloto da padronização de comando/output (Fase 3) — bloco de output marcado com a tag ` ```output `; separado em blocos o fluxo "entra no container / roda comando lá dentro / volta pro host", que antes misturava tudo com um prompt de container inconsistente (`bash-5.2$#`). Regra final do `$` (após pesquisa de boas práticas): usado só quando há output no bloco, ou quando a sequência muda de contexto de execução (host → dentro do container → host, como no passo 3); removido de blocos de comando puro sem troca de contexto, mesmo com vários comandos (passos 2 e 4).
 
 ## v1.0.1 - 2024-09-30
 
