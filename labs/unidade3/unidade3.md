@@ -108,7 +108,9 @@
     $ docker-compose exec db mysql -u root -p
     ```
 
-    Use `exemplo` como senha. No prompt do MySQL:
+    O comando pede a senha — digite `exemplo`.
+
+    No prompt do MySQL:
 
     ```bash
     $ SHOW DATABASES;
