@@ -520,8 +520,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    - Acesse o primeiro contêiner e use o comando `ping` para verificar a conectividade com o segundo contêiner.
 
    ```bash
-   docker exec -it conteiner1 sh
-   ping conteiner2
+   $ docker exec -it conteiner1 sh
+   $ ping conteiner2
    ```
 
 5. Limpar o Ambiente:
@@ -597,28 +597,37 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    - Execute um contêiner `ubuntu` e verifique o usuário atual.
 
    ```bash
-   docker run -it --name user_test ubuntu
-   whoami
+   $ docker run -it --name user_test ubuntu
+   $ whoami
    ```
 
 2. **Adicionar um Novo Usuário:**
    - Dentro do contêiner, adicione um novo usuário chamado `novo_usuario`.
 
+   Continuando anexado ao mesmo container do passo anterior:
+
    ```bash
-   apt-get update
-   apt-get install -y sudo
-   adduser novo_usuario
-   usermod -aG sudo novo_usuario
+   $ apt-get update
+   $ apt-get install -y sudo
+   $ adduser novo_usuario
+   $ usermod -aG sudo novo_usuario
    ```
 
 3. **Executar o Contêiner com o Novo Usuário:**
    - Saia do contêiner e execute-o novamente com o novo usuário `novo_usuario`.
 
+   Dê o detach ou saia do container (`exit`). De volta no host:
+
    ```bash
    docker commit user_test user_test_image
    docker rm user_test
-   docker run -it --name user_test --user novo_usuario user_test_image
-   whoami
+   ```
+
+   Suba um novo container a partir da imagem com o usuário criado:
+
+   ```bash
+   $ docker run -it --name user_test --user novo_usuario user_test_image
+   $ whoami
    ```
 
 4. **Limpar o Ambiente:**
@@ -670,32 +679,32 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    - Execute um contêiner `busybox` e teste a capacidade de usar `ping`, DNS e TCP.
 
    ```bash
-   docker run --rm -it busybox
+   $ docker run --rm -it busybox
    ```
 
    - Dentro do contêiner, teste os seguintes comandos:
 
    ```sh
-   ping -c 2 google.com
-   nslookup google.com
-   wget http://example.com
-   exit
+   $ ping -c 2 google.com
+   $ nslookup google.com
+   $ wget http://example.com
+   $ exit
    ```
 
 2. **Executar um Contêiner com `--cap-drop` para Remover Capacidades:**
    - Execute um contêiner `busybox` removendo a capacidade `CAP_NET_RAW` que é necessária para o comando `ping`.
 
    ```bash
-   docker run --rm -it --cap-drop=NET_RAW busybox
+   $ docker run --rm -it --cap-drop=NET_RAW busybox
    ```
 
 3. **Testar as Restrições:**
    - Dentro do contêiner, tente usar os mesmos comandos novamente:
 
    ```sh
-   ping -c 2 google.com    # Deve falhar
-   nslookup google.com     # Deve funcionar
-   wget http://example.com # Deve funcionar
+   $ ping -c 2 google.com    # Deve falhar
+   $ nslookup google.com     # Deve funcionar
+   $ wget http://example.com # Deve funcionar
    ```
 
 4. **Analisar o Comportamento:**
