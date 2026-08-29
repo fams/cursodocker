@@ -530,9 +530,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 3. Edite o index.html em www, troque a linha 45 de 9 para 9.1 e recrie a imagem
 
     ```html
-    ...
             <h1>Bem-vindo ao LAB 9 - Docker</h1>
-    ...
     ```
 
     ```bash
