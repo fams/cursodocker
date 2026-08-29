@@ -426,7 +426,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     docker stop my-py-web-03
     ```
 
-8. Remover os containers
+10. Remover os containers
 
     ```bash
     $ docker stop my-py-web-03

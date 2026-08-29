@@ -13,6 +13,7 @@ unidade1.md
 unidade1.md
 
 - Lab 10: adicionado o `:` que faltava em `### Objetivo`, que quebrava a extração automática do objetivo do lab em ferramentas que dependem desse padrão.
+- Lab 7, item 10: corrigida numeração duplicada (`8.` repetido em vez de `10.`).
 
 ## v1.0.1 - 2024-09-30
 
