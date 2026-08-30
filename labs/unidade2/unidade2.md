@@ -20,6 +20,11 @@ Você vai precisar de uma máquina Linux para esses LABS.
 
    2. Se estiver em uma distribuição baseada em rpm, como o fedora, siga os seguintes passos:
 
+       (Se estiver usando o console da ferramenta de acompanhamento do curso: ele é baseado em
+       Ubuntu, então esse caminho não se aplica — siga o caminho Debian/Ubuntu acima.)
+
+       <!--send:off-->
+
        ```bash
         sudo dnf -y \
         --installroot=$PWD/rootfs \
