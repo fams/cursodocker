@@ -1,5 +1,12 @@
 # LABS Unidade 2
 
+<!-- Comentários HTML deste arquivo (marcadores "console", "send:off" e "term:split-h",
+     no formato de comentário HTML padrão) são invisíveis em qualquer visualização Markdown,
+     inclusive no GitHub, mas são lidos por ferramentas externas de apoio ao curso -- não
+     remova nem desloque ao editar o conteúdo ao redor. Cada um vale só pro trecho onde
+     aparece (um lab, um passo ou um bloco de código especifico, conforme o marcador), não
+     pra seção inteira. -->
+
 Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheatsheet.pdf) para ajudar com os comandos:
 
 Você vai precisar de uma máquina Linux para esses LABS.
@@ -19,9 +26,6 @@ Você vai precisar de uma máquina Linux para esses LABS.
        ```
 
    2. Se estiver em uma distribuição baseada em rpm, como o fedora, siga os seguintes passos:
-
-       (Se estiver usando o console da ferramenta de acompanhamento do curso: ele é baseado em
-       Ubuntu, então esse caminho não se aplica — siga o caminho Debian/Ubuntu acima.)
 
        <!--send:off-->
 

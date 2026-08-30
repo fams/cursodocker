@@ -7,7 +7,8 @@
 unidade2.md
 
 - Lab 1: marcado com um comentário HTML `<!--console:ubuntu-->` (invisível em qualquer visualização Markdown, inclusive no GitHub) sinalizando que o lab inteiro precisa de um ambiente Debian/Ubuntu de verdade (`chroot`/`pivot_root`/`debootstrap` não usam Docker em nenhum momento) — usado por ferramentas de apoio ao curso para abrir um console alternativo nesse lab.
-- Lab 1, item 1 (variante Fedora/`dnf`): adicionada nota indicando que esse caminho não se aplica ao console das ferramentas de apoio ao curso (baseado em Ubuntu), e um comentário HTML `<!--send:off-->` sinalizando o mesmo pra essas ferramentas.
+- Lab 1, item 1 (variante Fedora/`dnf`): marcado com um comentário HTML `<!--send:off-->` sinalizando pras ferramentas de apoio ao curso que esse caminho não se aplica ao console delas (baseado em Ubuntu).
+- Início do arquivo: comentário HTML explicando a convenção dos marcadores invisíveis (`console`, `send:off`, `term:split-h`) usados nesse arquivo, pra quem for editar não removê-los sem querer.
 
 ## v1.1.1 - 2026-08-29
 
