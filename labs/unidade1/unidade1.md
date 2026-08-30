@@ -359,7 +359,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Criando uma imagem docker
 
     ```bash
-    cd labs/unidade1/lab7
+    cd lab7
     cat Dockerfile
     # -t <imagename>:<version>
     docker build . -t py-web:01
@@ -484,6 +484,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
 ## LAB 8
 
+<!--continua:unidade1-lab7-->
+
 ### Objetivo: Utilizando uma imagem a partir de outra e um repositório remoto
 
 1. Liste a imagem do lab7 e vc vai econtrar algo como abaixo
@@ -506,7 +508,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 3. Crie a imagem do lab8 a partir da imagem do lab7
 
     ```bash
-    $ cd labs/unidade1/lab8
+    $ cd lab8
     $ docker build . -t lab8:01
     $ docker image ls
     ```
@@ -573,7 +575,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 1. Construa a imagem do lab9. Nesse lab utilizaremos mais de um Dockerfile
 
     ```bash
-    cd labs/unidade1/lab9
+    cd lab9
     docker build -f Dockerfile-1 -t lab9:01 .
     ```
 
@@ -779,7 +781,7 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 2. Execute o docker build
 
     ```bash
-    cd labs/unidade1/lab10
+    cd lab10
     docker build . -t lab10:01
     ```
 
@@ -808,6 +810,8 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     Esse procedimento com imagem _scratch_ é possível porque o _GO_ possui uma compilação estática, isso é, não depende de bibliotecas. É possivel fazer algo semelhante para outras linguagens, como por exemplo _java_, onde no primeiro estágio _build_ temos a _JDK_ e no segundo estágio somente a _JRE_.
 
 ## LAB 11
+
+<!--continua:unidade1-lab10-->
 
 ### Objetivo: Acelerar builds com cache mounts do BuildKit
 
@@ -859,6 +863,8 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 
 ## LAB 12
 
+<!--continua:unidade1-lab11-->
+
 ### Objetivo: Construir imagens multi-plataforma com `buildx`
 
 1. **Suba um registry local**
@@ -908,10 +914,10 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 
 ### Objetivo: Parametrizar builds com `ARG` e injetar credenciais de build sem deixar rastro na imagem
 
-1. **Crie o diretório do lab13**
+1. **Entre no diretório do lab13**
 
     ```bash
-    mkdir ../lab13 && cd ../lab13
+    cd lab13
     ```
 
 2. **Use `ARG` para parametrizar a versão da imagem base**
@@ -960,6 +966,8 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 
 ## LAB 14
 
+<!--continua:unidade1-lab13-->
+
 ### Objetivo: Reduzir camadas de build com `COPY --link` e bind mounts de contexto
 
 1. **Copie o lab13 para o lab14**
@@ -993,6 +1001,8 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 4. **Altere só o binário final (não o código-fonte) e reconstrua**, observando que, com `--link`, o Docker consegue reaproveitar/anexar camadas de forma independente em vez de invalidar tudo abaixo do `COPY`.
 
 ## LAB 15
+
+<!--continua:unidade1-lab12-->
 
 ### Objetivo: Gerar SBOM e proveniência de build (introdução a supply-chain)
 
