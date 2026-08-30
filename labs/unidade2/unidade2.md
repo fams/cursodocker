@@ -1,10 +1,19 @@
 # LABS Unidade 2
 
+<!-- Comentários HTML deste arquivo (marcadores "console", "send:off" e "term:split-h",
+     no formato de comentário HTML padrão) são invisíveis em qualquer visualização Markdown,
+     inclusive no GitHub, mas são lidos por ferramentas externas de apoio ao curso -- não
+     remova nem desloque ao editar o conteúdo ao redor. Cada um vale só pro trecho onde
+     aparece (um lab, um passo ou um bloco de código especifico, conforme o marcador), não
+     pra seção inteira. -->
+
 Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheatsheet.pdf) para ajudar com os comandos:
 
 Você vai precisar de uma máquina Linux para esses LABS.
 
 ## LAB 1
+
+<!--console:ubuntu-->
 
 ### Objetivo: Entender o uso do chroot e pivot_root
 
@@ -17,6 +26,8 @@ Você vai precisar de uma máquina Linux para esses LABS.
        ```
 
    2. Se estiver em uma distribuição baseada em rpm, como o fedora, siga os seguintes passos:
+
+       <!--send:off-->
 
        ```bash
         sudo dnf -y \
@@ -184,7 +195,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    <!--term:split-h-2-->
 
    ```bash
-    unshare --net=/namespaces/001 /bin/bash
+    unshare --net=/namespaces/001/net /bin/bash
     # verifique as interfaces disponíveis
     ip link ls
     # carregar a interface lo
@@ -199,7 +210,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
     # Criar o par de vethX
     ip link add veth0 type veth peer name veth1
     # Atribuir a veth0 ao namespace
-    ip link set veth0 netns /root/namespaces/net
+    ip link set veth0 netns /namespaces/001/net
     # Definir um ip para a rede
     ip addr add 10.23.0.1/30 dev veth1
     # Carregar a interface
@@ -659,23 +670,23 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 2. **Executar um Contêiner com Limites de CPU e Memória:**
 
     ```bash
-   docker run -d --name limited_container --cpus=".5" --memory="256m" waste-resources -waste-cpu 1
-   docker run -d --name limited_container --cpus=".5" --memory="256m" waste-resources -hog-memory 25
+   docker run -d --name limited_container_cpu --cpus=".5" --memory="256m" waste-resources -waste-cpu 1
+   docker run -d --name limited_container_mem --cpus=".5" --memory="256m" waste-resources -hog-memory 25
    ```
 
 3. **Verificar Limites de Recursos:**
-   - Use o comando `docker stats` para verificar os recursos consumidos pelo contêiner.
+   - Use o comando `docker stats` para verificar os recursos consumidos pelos contêineres.
 
    ```bash
-   docker stats limited_container
+   docker stats limited_container_cpu limited_container_mem
    ```
 
 4. **Limpar o Ambiente:**
-   - Remova o contêiner criado.
+   - Remova os contêineres criados.
 
    ```bash
-   docker stop limited_container
-   docker rm limited_container
+   docker stop limited_container_cpu limited_container_mem
+   docker rm limited_container_cpu limited_container_mem
    ```
 
 ## Lab 13
