@@ -505,11 +505,19 @@
 
 ### Objetivo: Comparar as políticas de restart (`no`, `on-failure`, `always`, `unless-stopped`)
 
-1. **Copie o lab7 para o lab8**
+1. **Copie o lab7 para o lab8, e adicione `init: true` ao serviço `flask`**
 
    ```bash
    cp -R ../lab7 ../lab8 && cd ../lab8
    ```
+
+   ```yaml
+   flask:
+     ...
+     init: true
+   ```
+
+   Isso é necessário pelo mesmo motivo do passo seguinte: o processo PID 1 de um container é imune a sinais enviados de dentro do seu próprio namespace, a menos que tenha um handler instalado pra aquele sinal — `init: true` roda um init mínimo (`tini`) como PID 1 no lugar do processo do Flask, e o `tini` instala handlers pra sinais como `SIGTERM` justamente pra permitir isso. Sem essa opção, nenhum `kill` de dentro do container (nem `kill -9`, veja o próximo passo) derruba o PID 1 — só um `docker stop`/`docker kill` feito do host (que age em outro namespace) consegue.
 
 2. **Configure o `flask` sem política de restart (default `no`)**
 
@@ -532,10 +540,12 @@
 
    ```bash
    docker compose up -d
-   docker compose exec flask sh -c "kill -9 1"
+   docker compose exec flask sh -c "kill 1"
    sleep 5
    docker compose ps flask  # foi reiniciado
    ```
+
+   Use `kill` (`SIGTERM`), não `kill -9` (`SIGKILL`): `SIGKILL` nunca pode ter um handler instalado (é uma regra do kernel, não uma questão de configuração), então ele **nunca** derruba o PID 1 de dentro do próprio namespace, mesmo com `tini` — nem com `init: true`. O `SIGTERM` funciona porque o `tini` sabe tratá-lo.
 
    Use sempre `docker compose exec` (executa dentro do container) e não `docker kill`/`docker stop` do host para este teste: o Docker trata uma parada feita pelo host como intencional e **não** aciona a política de restart, mesmo com `on-failure`.
 
