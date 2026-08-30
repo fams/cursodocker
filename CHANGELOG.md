@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.6 - 2026-08-30
+
+### Added
+
+unidade1.md
+
+- Lab 6: marcado com um comentário HTML `<!--console:ubuntu-->` (invisível em qualquer visualização Markdown, inclusive no GitHub) sinalizando que o lab precisa de um ambiente Debian/Ubuntu de verdade — o `apt install -y mysql-client` do passo 1 não existe em ambientes Alpine, e o cliente MySQL de distros baseadas em Alpine é na real um cliente MariaDB, incompatível com o plugin de autenticação padrão do MySQL 8+ usado pelo passo 2. Testado com o cliente real (Ubuntu `mysql-client`) conectando com sucesso e retornando os dados esperados.
+
 ## v1.1.5 - 2026-08-30
 
 ### Added

@@ -324,6 +324,8 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
 ## LAB 6
 
+<!--console:ubuntu-->
+
 ### Objetivo: Utilizando uma imagem de banco mysql
 
 1. Instale o cliente mysql
