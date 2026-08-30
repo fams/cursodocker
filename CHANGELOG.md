@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.2 - 2026-08-29
+
+### Added
+
+unidade2.md
+
+- Lab 1: marcado com um comentário HTML `<!--console:ubuntu-->` (invisível em qualquer visualização Markdown, inclusive no GitHub) sinalizando que o lab inteiro precisa de um ambiente Debian/Ubuntu de verdade (`chroot`/`pivot_root`/`debootstrap` não usam Docker em nenhum momento) — usado por ferramentas de apoio ao curso para abrir um console alternativo nesse lab.
+
 ## v1.1.1 - 2026-08-29
 
 ### Added

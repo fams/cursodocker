@@ -6,6 +6,8 @@ Você vai precisar de uma máquina Linux para esses LABS.
 
 ## LAB 1
 
+<!--console:ubuntu-->
+
 ### Objetivo: Entender o uso do chroot e pivot_root
 
 1. Inicialize um diretório com o conteúdo de um sistema base linux
