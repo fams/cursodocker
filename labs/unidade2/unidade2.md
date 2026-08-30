@@ -170,6 +170,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 1. _No Terminal 2_, Crie uma âncora de filesystem para suas namespaces.
 
+   <!--term:split-h-2-->
+
    ```bash
    # como root
     sudo su -
@@ -178,6 +180,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
     ```
 
 2. _No Terminal 1_, entre na namespace de rede isolada
+
+   <!--term:split-h-2-->
 
    ```bash
     unshare --net=/namespaces/001 /bin/bash
@@ -188,6 +192,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```
 
 3. _No Terminal 2_, configurar a rede no namespace 001
+
+   <!--term:split-h-2-->
 
    ```bash
     # Criar o par de vethX
@@ -201,6 +207,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```
 
 4. _No Terminal 1_, configurar a rede
+
+   <!--term:split-h-2-->
 
    ```bash
     # Atribuir ip à interface
@@ -227,26 +235,34 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 2. Descubra a versão do cgroup em uso
 
     ```bash
-    $ mount |grep cgroup
-     # Se o cgroup for v2, vc verá uma linha para o cgroup semelhante a abaixo
-     cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
-     # Se for um cgroup v1 vera uma linha para cada control group, semelhante a abaixo
-     tmpfs on /sys/fs/cgroup type tmpfs (rw,nosuid,nodev,noexec,relatime,mode=755)
-     cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime)
-     cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)
-     cgroup on /sys/fs/cgroup/cpu type cgroup (rw,nosuid,nodev,noexec,relatime,cpu)
-     cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct)
-     cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)
-     cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)
-     cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)
-     cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
-     cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,nosuid,nodev,noexec,relatime,net_cls)
-     cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
-     cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,net_prio)
-     cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
-     cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
-     cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,rdma)
-     cgroup on /sys/fs/cgroup/misc type cgroup (rw,nosuid,nodev,noexec,relatime,misc)
+    $ mount | grep cgroup
+    ```
+
+    Se o cgroup for v2, você verá uma linha para o cgroup semelhante a abaixo:
+
+    ```output
+    cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
+    ```
+
+    Se for um cgroup v1, verá uma linha para cada control group, semelhante a abaixo:
+
+    ```output
+    tmpfs on /sys/fs/cgroup type tmpfs (rw,nosuid,nodev,noexec,relatime,mode=755)
+    cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime)
+    cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)
+    cgroup on /sys/fs/cgroup/cpu type cgroup (rw,nosuid,nodev,noexec,relatime,cpu)
+    cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct)
+    cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)
+    cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)
+    cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)
+    cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
+    cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,nosuid,nodev,noexec,relatime,net_cls)
+    cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
+    cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,net_prio)
+    cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
+    cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
+    cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,rdma)
+    cgroup on /sys/fs/cgroup/misc type cgroup (rw,nosuid,nodev,noexec,relatime,misc)
     ```
 
 3. Criando um grupo para acomodar a memória limitada
@@ -437,7 +453,10 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
    ```bash
    docker volume create lab7_volume_named
-   docker run --name lab7_container_1 --mount source=lab7_volume_named,target=/data -it  busybox
+   ```
+
+   ```bash
+   $ docker run --name lab7_container_1 --mount source=lab7_volume_named,target=/data -it  busybox
    $ echo "Inside Container id $(hostname)" >/data/lab71.txt
    $ exit
    ```
@@ -445,26 +464,31 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 2. Crie um contêiner com o volume nomeado junto ao run
 
    ```bash
-   docker run --name lab7_container_2 --mount source=lab7_volume_named2,target=/data -it busybox
+   $ docker run --name lab7_container_2 --mount source=lab7_volume_named2,target=/data -it busybox
    $ echo "Inside id $(hostname)"  > /data/lab71.txt
    $ exit
    ```
 
    ```bash
-   docker run --name lab7_container_3 -v /data -it busybox
+   $ docker run --name lab7_container_3 -v /data -it busybox
    $ echo "Inside id $(hostname)"  > /data/lab71.txt
    $ exit
+   ```
 
 3. Acesse os dados de outro contêiner
 
    ```bash
-   docker volume ls #verifique o nome dos contêineres
-   docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
+   # verifique o nome dos contêineres
+   docker volume ls
+   ```
+
+   ```bash
+   $ docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
    $ echo "Inside Container id $(hostname)" > /data4/lab71.txt
    $ cat /data/lab71.txt
    $ cat /data2/lab71.txt
    $ cat /data3/lab71.txt
-   exit
+   $ exit
    ```
 
 4. Liste os volumes, os contêineres que os acessam e tente removê-los. Reflita o que aconteceu e remova-os contêineres
@@ -504,8 +528,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    - Acesse o primeiro contêiner e use o comando `ping` para verificar a conectividade com o segundo contêiner.
 
    ```bash
-   docker exec -it conteiner1 sh
-   ping conteiner2
+   $ docker exec -it conteiner1 sh
+   $ ping conteiner2
    ```
 
 5. Limpar o Ambiente:
@@ -581,28 +605,37 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    - Execute um contêiner `ubuntu` e verifique o usuário atual.
 
    ```bash
-   docker run -it --name user_test ubuntu
-   whoami
+   $ docker run -it --name user_test ubuntu
+   $ whoami
    ```
 
 2. **Adicionar um Novo Usuário:**
    - Dentro do contêiner, adicione um novo usuário chamado `novo_usuario`.
 
+   Continuando anexado ao mesmo container do passo anterior:
+
    ```bash
-   apt-get update
-   apt-get install -y sudo
-   adduser novo_usuario
-   usermod -aG sudo novo_usuario
+   $ apt-get update
+   $ apt-get install -y sudo adduser
+   $ adduser novo_usuario
+   $ usermod -aG sudo novo_usuario
    ```
 
 3. **Executar o Contêiner com o Novo Usuário:**
    - Saia do contêiner e execute-o novamente com o novo usuário `novo_usuario`.
 
+   Dê o detach ou saia do container (`exit`). De volta no host:
+
    ```bash
    docker commit user_test user_test_image
    docker rm user_test
-   docker run -it --name user_test --user novo_usuario user_test_image
-   whoami
+   ```
+
+   Suba um novo container a partir da imagem com o usuário criado:
+
+   ```bash
+   $ docker run -it --name user_test --user novo_usuario user_test_image
+   $ whoami
    ```
 
 4. **Limpar o Ambiente:**
@@ -611,13 +644,13 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```bash
    docker rm user_test
    docker rmi user_test_image
+   ```
 
 ## Lab 12
 
 ### Objetivo: Entender como limitar os recursos (CPU e memória) dos contêineres Docker para melhorar a segurança e a estabilidade do sistema.
 
-1. **Crie uma imagem com o gastador de recursos do lab5
-
+1. **Crie uma imagem com o gastador de recursos do lab5**
    ```bash
    cd lab5
    docker build -t waste-resources .
@@ -653,32 +686,32 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    - Execute um contêiner `busybox` e teste a capacidade de usar `ping`, DNS e TCP.
 
    ```bash
-   docker run --rm -it busybox
+   $ docker run --rm -it busybox
    ```
 
    - Dentro do contêiner, teste os seguintes comandos:
 
    ```sh
-   ping -c 2 google.com
-   nslookup google.com
-   wget http://example.com
-   exit
+   $ ping -c 2 google.com
+   $ nslookup google.com
+   $ wget http://example.com
+   $ exit
    ```
 
 2. **Executar um Contêiner com `--cap-drop` para Remover Capacidades:**
    - Execute um contêiner `busybox` removendo a capacidade `CAP_NET_RAW` que é necessária para o comando `ping`.
 
    ```bash
-   docker run --rm -it --cap-drop=NET_RAW busybox
+   $ docker run --rm -it --cap-drop=NET_RAW busybox
    ```
 
 3. **Testar as Restrições:**
    - Dentro do contêiner, tente usar os mesmos comandos novamente:
 
    ```sh
-   ping -c 2 google.com    # Deve falhar
-   nslookup google.com     # Deve funcionar
-   wget http://example.com # Deve funcionar
+   $ ping -c 2 google.com    # Deve falhar
+   $ nslookup google.com     # Deve funcionar
+   $ wget http://example.com # Deve funcionar
    ```
 
 4. **Analisar o Comportamento:**

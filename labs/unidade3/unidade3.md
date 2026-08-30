@@ -90,21 +90,30 @@
    - Conecte-se ao contêiner `redis` e execute alguns comandos Redis.
 
    ```bash
-   docker-compose exec redis redis-cli
+   $ docker-compose exec redis redis-cli
+   ```
 
-   127.0.0.1:6379> set chave "valor"
-   127.0.0.1:6379> get chave
-   127.0.0.1:6379> exit
+   No prompt do Redis:
+
+   ```redis
+   $ set chave "valor"
+   $ get chave
+   $ exit
    ```
 
 9. **Adicionar um Banco de Dados (MySQL):**
     - Verifique a conexão ao banco de dados MySQL criado.
 
     ```bash
-    docker-compose exec db mysql -u root -p
-    # Use 'exemplo' como senha
+    $ docker-compose exec db mysql -u root -p
+    ```
 
-    mysql> SHOW DATABASES;
+    O comando pede a senha — digite `exemplo`.
+
+    No prompt do MySQL:
+
+    ```mysql
+    $ SHOW DATABASES;
     ```
 
 10. **Parar e Remover os Serviços:**
