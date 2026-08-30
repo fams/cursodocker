@@ -1,5 +1,21 @@
 # Change Log
 
+## v1.1.11 - 2026-08-30
+
+### Added
+
+unidade1.md
+
+- Labs 8, 11, 12, 14, 15: marcados com `<!--continua:ID-->` sinalizando que reaproveitam ambiente/imagem de um lab anterior (Lab 8 precisa da imagem construída no Lab 7; Lab 11 copia o código-fonte do Lab 10; Lab 12 e 15 reaproveitam o Dockerfile/builder do Lab 11; Lab 14 copia o Dockerfile do Lab 13) em vez de um container novo e isolado.
+- Lab 13: criado o fixture `labs/unidade1/lab13/` (`go.mod`/`main.go`) que faltava — o Dockerfile do lab (`COPY . .`, `go build -o app .`) não tinha nenhum código-fonte pra compilar.
+
+### Fixed
+
+unidade1.md
+
+- Labs 7, 9, 10: `cd labs/unidade1/labN` trocado por `cd labN`, alinhando com a convenção já usada pelos Labs 11-15 (necessário pras ferramentas de apoio ao curso conseguirem localizar os arquivos de cada lab de forma consistente).
+- Lab 13, item 1: removido o `mkdir` (o diretório já existe, populado com o fixture novo).
+
 ## v1.1.10 - 2026-08-30
 
 ### Fixed
