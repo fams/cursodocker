@@ -191,7 +191,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 2. _No Terminal 1_, entre na namespace de rede isolada
 
    ```bash
-    unshare --net=/namespaces/001 /bin/bash
+    unshare --net=/namespaces/001/net /bin/bash
     # verifique as interfaces disponíveis
     ip link ls
     # carregar a interface lo
@@ -204,7 +204,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
     # Criar o par de vethX
     ip link add veth0 type veth peer name veth1
     # Atribuir a veth0 ao namespace
-    ip link set veth0 netns /root/namespaces/net
+    ip link set veth0 netns /namespaces/001/net
     # Definir um ip para a rede
     ip addr add 10.23.0.1/30 dev veth1
     # Carregar a interface
@@ -637,23 +637,23 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 2. **Executar um Contêiner com Limites de CPU e Memória:**
 
     ```bash
-   docker run -d --name limited_container --cpus=".5" --memory="256m" waste-resources -waste-cpu 1
-   docker run -d --name limited_container --cpus=".5" --memory="256m" waste-resources -hog-memory 25
+   docker run -d --name limited_container_cpu --cpus=".5" --memory="256m" waste-resources -waste-cpu 1
+   docker run -d --name limited_container_mem --cpus=".5" --memory="256m" waste-resources -hog-memory 25
    ```
 
 3. **Verificar Limites de Recursos:**
-   - Use o comando `docker stats` para verificar os recursos consumidos pelo contêiner.
+   - Use o comando `docker stats` para verificar os recursos consumidos pelos contêineres.
 
    ```bash
-   docker stats limited_container
+   docker stats limited_container_cpu limited_container_mem
    ```
 
 4. **Limpar o Ambiente:**
-   - Remova o contêiner criado.
+   - Remova os contêineres criados.
 
    ```bash
-   docker stop limited_container
-   docker rm limited_container
+   docker stop limited_container_cpu limited_container_mem
+   docker rm limited_container_cpu limited_container_mem
    ```
 
 ## Lab 13
