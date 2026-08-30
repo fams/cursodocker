@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.1.10 - 2026-08-30
+
+### Fixed
+
+unidade1.md
+
+- Lab 11, item 2: o `go build` do Dockerfile gerava um binário linkado dinamicamente contra a libc (padrão do Go quando há um compilador C disponível, como na imagem `golang:1.22`), mas a stage final usa `FROM scratch`, que não tem libc nem interpretador de ld — qualquer `docker run` dessa imagem falhava com "exec: no such file or directory". Corrigido com `CGO_ENABLED=0` no `go build`, gerando um binário estaticamente linkado. Encontrado ao validar o Lab 12 (que reaproveita esse Dockerfile e tem um passo de `docker run` que expôs o problema).
+- Lab 12, itens 1-2: o builder `buildx` usava o driver padrão (`docker-container`), que roda o BuildKit isolado num container com seu próprio namespace de rede — o `--push` pro registry local (`localhost:5000`) falhava com "connection refused". Corrigido criando o builder com `--driver-opt network=host`. Também trocado o registry reaproveitado do Lab 10 da Unidade 2 (dependência cruzada entre unidades) por um registry local próprio do lab (`docker run registry:2.8.2`), tornando o Lab 12 self-contained. Testado o fluxo completo (registry, build multi-plataforma, push, inspect do manifest list e run) com containers reais.
+
 ## v1.1.9 - 2026-08-30
 
 ### Fixed

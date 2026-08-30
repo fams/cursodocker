@@ -827,12 +827,14 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     COPY src/ /src
     RUN --mount=type=cache,target=/root/go/pkg/mod \
         --mount=type=cache,target=/root/.cache/go-build \
-        go mod tidy && go build -o httpserver main.go
+        go mod tidy && CGO_ENABLED=0 go build -o httpserver main.go
 
     FROM scratch
     COPY --from=build /src/httpserver /usr/local/bin/httpserver
     ENTRYPOINT [ "/usr/local/bin/httpserver" ]
     ```
+
+    `CGO_ENABLED=0` é necessário porque a imagem `golang:1.22` tem um compilador C disponível, e por padrão o Go liga o binário dinamicamente contra a libc do sistema quando isso acontece — um binário assim não roda em `FROM scratch` (que não tem libc nem o interpretador de ld dinâmico). Com `CGO_ENABLED=0`, o binário sai estaticamente linkado.
 
 3. **Faça o primeiro build e cronometre**
 
@@ -859,20 +861,28 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 
 ### Objetivo: Construir imagens multi-plataforma com `buildx`
 
-1. **Crie e ative um builder `buildx`**
+1. **Suba um registry local**
 
     ```bash
-    docker buildx create --name multiarch --use
+    docker run -d --name registry -p 5000:5000 registry:2.8.2
+    ```
+
+2. **Crie e ative um builder `buildx` com rede compartilhada com o host**
+
+    ```bash
+    docker buildx create --name multiarch --driver-opt network=host --use
     docker buildx inspect --bootstrap
     ```
 
-2. **Reaproveite o Dockerfile do Lab 11**
+    O driver padrão (`docker-container`) roda o BuildKit isolado num container com seu próprio namespace de rede — sem `network=host`, o `--push` do próximo passo não alcança o `localhost:5000` do passo anterior.
+
+3. **Reaproveite o Dockerfile do Lab 11**
 
     ```bash
     cd ../lab11
     ```
 
-3. **Construa para duas arquiteturas e publique em um repositório local (reaproveite o registry do Lab 10 da Unidade 2)**
+4. **Construa para duas arquiteturas e publique no registry local**
 
     ```bash
     docker buildx build \
@@ -881,14 +891,14 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
       --push .
     ```
 
-4. **Inspecione o manifest list gerado**
+5. **Inspecione o manifest list gerado**
 
     ```bash
     docker buildx imagetools inspect localhost:5000/lab11-multi:01
     # Note as duas entradas de plataforma dentro do mesmo tag
     ```
 
-5. **Rode a imagem e confira que o Docker seleciona a plataforma correta automaticamente**
+6. **Rode a imagem e confira que o Docker seleciona a plataforma correta automaticamente**
 
     ```bash
     docker run --rm localhost:5000/lab11-multi:01
