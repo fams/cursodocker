@@ -21,8 +21,8 @@ Você vai precisar de uma máquina Linux para esses LABS.
    1. Se você estiver em uma distribuição baseada em debian, como o ubuntu, siga esses passos:
 
        ```bash
-       sudo apt install debootstrap
-       sudo debootstrap --variant=buildd --include=iputils-ping,python3,procps,net-tools,iproute2 --arch=i386 stable ./rootfs
+       $ sudo apt install debootstrap
+       $ sudo debootstrap --variant=buildd --include=iputils-ping,python3,procps,net-tools,iproute2 --arch=i386 stable ./rootfs
        ```
 
    2. Se estiver em uma distribuição baseada em rpm, como o fedora, siga os seguintes passos:

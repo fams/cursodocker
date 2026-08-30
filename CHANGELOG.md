@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.12 - 2026-08-30
+
+### Fixed
+
+unidade2.md
+
+- Lab 1, item 1a: os dois comandos (`apt install debootstrap` e `debootstrap`) estavam num bloco sem prefixo `$`, então as ferramentas de apoio ao curso tratavam as duas linhas como um bloco indivisível — o rótulo exibido truncava na primeira linha, escondendo o `debootstrap` por completo. Adicionado `$` em cada linha, igual à convenção usada no resto do arquivo, separando os dois em áreas copiáveis distintas.
+
 ## v1.1.11 - 2026-08-30
 
 ### Added
