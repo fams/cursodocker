@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.9 - 2026-08-30
+
+### Fixed
+
+unidade3.md
+
+- Lab 8, itens 2-5: `kill 1`/`kill -9 1` de dentro do container nunca derrubava o PID 1 (`docker compose ps flask` continuava "Up" mesmo depois do comando) — o PID 1 de um container é imune a sinais enviados de dentro do próprio namespace, a menos que tenha um handler instalado, e o processo do Flask (`python app.py`) não instala handler nenhum. Corrigido adicionando `init: true` ao serviço `flask` (item 1) — roda o `tini` como PID 1, que instala handler pra `SIGTERM` — e trocando `kill -9 1` por `kill 1` no item 3 (`SIGKILL` nunca pode ter handler, regra do kernel, então nunca funciona de dentro do namespace, com ou sem `tini`). Testados os 4 cenários (`no`/`on-failure`/`always` com kill interno/`always` com `docker stop` do host) com containers reais, todos batendo com o texto do lab.
+
 ## v1.1.7 - 2026-08-30
 
 ### Fixed
