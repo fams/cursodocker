@@ -1,5 +1,25 @@
 # Change Log
 
+## v1.1.4 - 2026-08-30
+
+### Added
+
+unidade2.md
+
+- Lab 1: marcado com um comentário HTML `<!--console:ubuntu-->` (invisível em qualquer visualização Markdown, inclusive no GitHub) sinalizando que o lab inteiro precisa de um ambiente Debian/Ubuntu de verdade (`chroot`/`pivot_root`/`debootstrap` não usam Docker em nenhum momento) — usado por ferramentas de apoio ao curso para abrir um console alternativo nesse lab.
+- Lab 1, item 1 (variante Fedora/`dnf`): marcado com um comentário HTML `<!--send:off-->` sinalizando pras ferramentas de apoio ao curso que esse caminho não se aplica ao console delas (baseado em Ubuntu).
+- Início do arquivo: comentário HTML explicando a convenção dos marcadores invisíveis (`console`, `send:off`, `term:split-h`) usados nesse arquivo, pra quem for editar não removê-los sem querer.
+
+### Fixed
+
+unidade2.md
+
+- Lab 4, item 2: `unshare --net=/namespaces/001` apontava pro diretório em vez do arquivo-âncora criado no item 1 (`/namespaces/001/net`) — `unshare --net` exige um arquivo, não um diretório, e o comando falhava com "Not a directory". Corrigido para `unshare --net=/namespaces/001/net`.
+- Lab 4, item 3: `ip link set veth0 netns /root/namespaces/net` referenciava um caminho que não existe em nenhum outro passo do lab — corrigido para `/namespaces/001/net`, o mesmo arquivo-âncora do item 1/2.
+- Lab 12, item 2: os dois `docker run` (um pra estourar CPU, outro memória) usavam o mesmo `--name limited_container`, e o segundo sempre falhava com conflito de nome. Renomeados para `limited_container_cpu`/`limited_container_mem`, com os passos seguintes (`docker stats`/`stop`/`rm`) ajustados pros dois nomes.
+
+Todos encontrados rodando os labs de verdade (containers reais, não só revisão do texto).
+
 ## v1.1.3 - 2026-08-29
 
 ### Fixed
