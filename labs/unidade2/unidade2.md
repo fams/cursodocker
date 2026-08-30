@@ -828,6 +828,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 ## Lab 16
 
+<!--continua:unidade2-lab15-->
+
 ### Objetivo: Restaurar um volume a partir de um backup
 
 1. **Crie um novo volume vazio**
@@ -912,6 +914,8 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```
 
 ## Lab 18
+
+<!--continua:unidade2-lab15-->
 
 ### Objetivo: Migrar um volume entre hosts usando backup em tar e o registry local
 

@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.5 - 2026-08-30
+
+### Added
+
+unidade2.md
+
+- Labs 16 e 18: marcados com um comentário HTML `<!--continua:unidade2-lab15-->` (invisível em qualquer visualização Markdown, inclusive no GitHub) sinalizando pras ferramentas de apoio ao curso que esses labs reaproveitam o mesmo ambiente do Lab 15 (do qual dependem o volume/backup gerado) em vez de um novo isolado.
+
 ## v1.1.4 - 2026-08-30
 
 ### Added
