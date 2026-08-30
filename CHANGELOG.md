@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.6 - 2026-08-30
+
+### Fixed
+
+unidade3.md (lab2/nginx.conf)
+
+- Lab 2, itens 6-9: o `nginx.conf` não balanceava carga entre as réplicas escaladas do serviço `flask` — o nginx resolve o hostname `flask` uma única vez (no load do config) e fixa nesse IP pro resto da vida do worker, então escalar (`--scale flask=3`) não tinha efeito nenhum no balanceamento, mesmo reiniciando o `web`. Corrigido adicionando `resolver 127.0.0.11 valid=10s;` (o DNS embutido do Docker Compose) e trocando `proxy_pass` por uma variável, que força o nginx a resolver o hostname a cada requisição em vez de uma vez só. Testado com 3 réplicas: requisições alternam corretamente entre os 3 hostnames.
+
 ## v1.1.5 - 2026-08-30
 
 ### Added
