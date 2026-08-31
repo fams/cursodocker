@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.1.13 - 2026-08-31
+
+### Fixed
+
+unidade2.md (fecha #14)
+
+- Lab 8, item 1: indentação da fence de abertura (4 espaços) corrigida pra bater com o conteúdo e a fence de fechamento (3 espaços).
+- Lab 7, itens 1-3: comando de transição (`docker run ... -it`) separado do que é digitado dentro do container, com uma frase indicando a troca de contexto — mesmo padrão já usado no resto do material (ex.: Unidade 1, Lab 1). De brinde, corrigido um espaço duplo no item 1.
+
 ## v1.1.12 - 2026-08-30
 
 ### Fixed

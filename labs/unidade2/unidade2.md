@@ -467,7 +467,12 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```
 
    ```bash
-   $ docker run --name lab7_container_1 --mount source=lab7_volume_named,target=/data -it  busybox
+   $ docker run --name lab7_container_1 --mount source=lab7_volume_named,target=/data -it busybox
+   ```
+
+   Dentro do container, crie um arquivo no volume montado e saia:
+
+   ```bash
    $ echo "Inside Container id $(hostname)" >/data/lab71.txt
    $ exit
    ```
@@ -476,12 +481,22 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
    ```bash
    $ docker run --name lab7_container_2 --mount source=lab7_volume_named2,target=/data -it busybox
+   ```
+
+   Dentro do container, crie um arquivo no volume montado e saia:
+
+   ```bash
    $ echo "Inside id $(hostname)"  > /data/lab71.txt
    $ exit
    ```
 
    ```bash
    $ docker run --name lab7_container_3 -v /data -it busybox
+   ```
+
+   Dentro do container, crie um arquivo no volume montado e saia:
+
+   ```bash
    $ echo "Inside id $(hostname)"  > /data/lab71.txt
    $ exit
    ```
@@ -495,6 +510,11 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
    ```bash
    $ docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
+   ```
+
+   Dentro do container, acesse os dados dos três volumes montados:
+
+   ```bash
    $ echo "Inside Container id $(hostname)" > /data4/lab71.txt
    $ cat /data/lab71.txt
    $ cat /data2/lab71.txt
@@ -516,7 +536,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 1. Verificar Redes Existentes:
    - Liste as redes existentes no Docker.
 
-    ```bash
+   ```bash
    docker network ls
    ```
 
