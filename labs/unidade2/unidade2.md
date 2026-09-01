@@ -182,13 +182,15 @@ Continuando do anterior
 
 ## lab 4
 
+<!--term:split-h-2-->
+
 ### Objetivo: Demonstrar o uso da comunicação entre namespaces
 
 Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo para executar os comandos
 
 1. _No Terminal 2_, Crie uma âncora de filesystem para suas namespaces.
 
-   <!--term:split-h-2-->
+   <!--term:ativo-2-->
 
    ```bash
    # como root
@@ -199,7 +201,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 2. _No Terminal 1_, entre na namespace de rede isolada
 
-   <!--term:split-h-2-->
+   <!--term:ativo-1-->
 
    ```bash
     unshare --net=/namespaces/001/net /bin/bash
@@ -211,7 +213,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 3. _No Terminal 2_, configurar a rede no namespace 001
 
-   <!--term:split-h-2-->
+   <!--term:ativo-2-->
 
    ```bash
     # Criar o par de vethX
@@ -226,7 +228,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
 4. _No Terminal 1_, configurar a rede
 
-   <!--term:split-h-2-->
+   <!--term:ativo-1-->
 
    ```bash
     # Atribuir ip à interface
