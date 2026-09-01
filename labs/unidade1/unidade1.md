@@ -79,7 +79,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     docker stop mybash --timeout 1
-    docker container prune --force
+    docker rm mybash
     ```
 
 ## LAB 2
@@ -168,7 +168,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     docker stop mynginx
-    docker container prune --force
+    docker rm mynginx
     ```
 
 ## LAB 3
@@ -240,7 +240,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     docker stop mybash --timeout 1
-    docker container prune --force
+    docker rm mybash
     ```
 
 ## LAB 4
@@ -307,7 +307,14 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
 ### Objetivo: Servir páginas locais com o NGINX
 
-1. no lab5
+1. Crie um diretório `www` com uma página local pra servir
+
+    ```bash
+    mkdir www
+    echo "<h1>Servido pelo NGINX via bind mount</h1>" > www/index.html
+    ```
+
+2. Suba o NGINX montando esse diretório como conteúdo (somente leitura)
 
     ```bash
     # Mount ReadOnly
@@ -315,7 +322,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
     curl localhost:8080
     ```
 
-2. Remover os containers
+3. Remover os containers
 
     ```bash
     docker stop mynginx
@@ -479,7 +486,7 @@ Utilize o [Docker Cheat-sheet](https://docs.docker.com/get-started/docker_cheats
 
     ```bash
     docker stop my-py-web-03
-    docker container prune --force
+    docker rm my-py-web-03
     ```
 
 ## LAB 8
@@ -940,7 +947,7 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     ```Dockerfile
     ARG API_TOKEN
     ENV API_TOKEN=$API_TOKEN
-    RUN curl -H "Authorization: Bearer $API_TOKEN" https://exemplo.com
+    RUN curl -H "Authorization: Bearer $API_TOKEN" https://httpbin.org/get
     ```
 
     ```bash
@@ -954,7 +961,7 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     ```Dockerfile
     # syntax=docker/dockerfile:1
     RUN --mount=type=secret,id=api_token \
-        curl -H "Authorization: Bearer $(cat /run/secrets/api_token)" https://exemplo.com
+        curl -H "Authorization: Bearer $(cat /run/secrets/api_token)" https://httpbin.org/get
     ```
 
     ```bash
@@ -998,7 +1005,13 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
     docker history lab14:01
     ```
 
-4. **Altere só o binário final (não o código-fonte) e reconstrua**, observando que, com `--link`, o Docker consegue reaproveitar/anexar camadas de forma independente em vez de invalidar tudo abaixo do `COPY`.
+4. **Altere o código-fonte (`main.go`) e reconstrua** -- com `--link`, o BuildKit trata a camada final (`COPY --link --from=build /out/app /app`) de forma independente das anteriores, anexando o binário novo sem precisar remontar as camadas de baixo do zero.
+
+    ```bash
+    echo 'func init() { println("versão 2 do binário") }' >> main.go
+    docker build -t lab14:01 .
+    docker run --rm lab14:01
+    ```
 
 ## LAB 15
 
@@ -1006,7 +1019,7 @@ Uma das preocupações que devemos ter é diminuir o tamanho da imagem. No lab a
 
 ### Objetivo: Gerar SBOM e proveniência de build (introdução a supply-chain)
 
-1. **Reaproveite o build multi-plataforma do Lab 12 (`buildx`)**
+1. **Reaproveite o builder (`buildx`) e o Dockerfile do Lab 11/12** -- este build não usa `--platform` aqui, só o mesmo builder e diretório
 
     ```bash
     cd ../lab11
