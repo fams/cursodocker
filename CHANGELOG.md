@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.15 - 2026-09-01
+
+### Added
+
+unidade2.md
+
+- Lab 4: `<!--term:split-h-2-->` movido pra logo após o título do lab (era repetido em todo item) e adicionado `<!--term:ativo-N-->` em cada item, indicando de forma confiável (pra ferramentas de apoio ao curso) qual dos 2 terminais é o alvo dos comandos daquele item -- a prosa ("_No Terminal 1_"/"_No Terminal 2_") continua igual, o marcador é só a versão à prova de interpretação de texto.
+
 ## v1.1.14 - 2026-09-01
 
 ### Added
