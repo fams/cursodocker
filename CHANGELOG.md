@@ -1,6 +1,20 @@
 # Change Log
 
-## v1.1.15 - 2026-09-01
+## v1.1.16 - 2026-09-01
+
+### Fixed
+
+unidade1.md (achados testando todos os labs com containers reais)
+
+- Labs 1, 2, 3, 7 (itens "Remover os containers"): `docker container prune --force` trocado por `docker rm <nome-do-container>` -- o prune é uma limpeza do Docker INTEIRO da máquina (todo container parado, não só os do lab), destrutivo e sem aviso pra qualquer outro trabalho parado no mesmo host/VM.
+- Lab 5: adicionado o passo que cria `./www/index.html` antes do `docker run -v ./www:...` -- o lab nunca teve esse passo nem um fixture, então como estava o bind mount montava um diretório vazio (NGINX respondia 403/vazio em vez de conteúdo customizado).
+- Lab 13, itens 3-4: `https://exemplo.com` trocado por `https://httpbin.org/get` -- o domínio de exemplo falha o handshake TLS (reproduzido também fora do ambiente de teste), fazendo o `docker build` falhar por completo e impedindo o próximo comando (`docker history`) de rodar.
+- Lab 14, item 4: instrução reescrita -- "altere só o binário final (não o código-fonte)" não fazia sentido (o binário é sempre gerado do código-fonte por esse Dockerfile) e não tinha bloco de comando nenhum. Agora altera `main.go` e reconstrói, com um bloco de comando testável.
+- Lab 15, item 1: "reaproveite o build multi-plataforma do Lab 12" corrigido -- o comando desse lab não usa `--platform`, só reaproveita o builder/Dockerfile, não é multi-plataforma.
+
+### Added
+
+unidade1.md
 
 ### Added
 
