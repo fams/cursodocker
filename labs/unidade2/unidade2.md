@@ -44,14 +44,21 @@ Você vai precisar de uma máquina Linux para esses LABS.
 2. Teste o funcionamento do chroot com o novo diretório
 
     ```bash
+    # Cria um arquivo no sistema real, fora do chroot
     touch /tmp/host.txt
+    # Cria um arquivo dentro do que será a raiz do chroot
     touch rootfs/tmp/rootfs.txt
+    # Entra no chroot -- a partir daqui "/" aponta pra dentro de rootfs
     sudo chroot rootfs
 
     hash -r
+    # De dentro do chroot: o arquivo do sistema real não aparece
     ls /tmp/host.txt
+    # De dentro do chroot: o arquivo criado dentro de rootfs aparece
     ls /tmp/rootfs.txt
+    # Sai do chroot, volta pro sistema real
     exit
+    # De volta ao sistema real: o arquivo do host aparece de novo
     ls /tmp/host.txt
     ```
 

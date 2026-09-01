@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.1.14 - 2026-09-01
+
+### Added
+
+unidade2.md
+
+- Lab 1, item 2 (teste do chroot): adicionados comentários explicando o que o aluno deve observar em cada `ls` (arquivo do host some de dentro do chroot, arquivo de dentro do chroot aparece, e volta ao normal depois do `exit`) -- o bloco nunca teve nenhum comentário, ao contrário do item 3 (pivot_root) do mesmo lab.
+
 ## v1.1.13 - 2026-08-31
 
 ### Fixed
