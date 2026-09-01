@@ -221,7 +221,7 @@
 
    ```bash
    mkdir lab3
-   cp -R lab2/{Dockerfile,html,contador,compose.yml} lab3/
+   cp -R lab2/{Dockerfile,html,contador,nginx.conf,docker-compose.yml} lab3/
    cd lab3
    ```
 
@@ -285,7 +285,13 @@
    cp -R ../lab3 ../lab4 && cd ../lab4
    ```
 
-2. **Crie um arquivo `.env` na raiz do projeto**
+2. **Renomeie o arquivo compose** -- a partir daqui o guia passa a chamá-lo de `compose.yml` (nome atual, oficial, do Compose)
+
+   ```bash
+   mv docker-compose.yml compose.yml
+   ```
+
+3. **Crie um arquivo `.env` na raiz do projeto**
 
    ```bash
    cat <<EOF > .env
@@ -295,7 +301,7 @@
    EOF
    ```
 
-3. **Use interpolação no `compose.yml`, referenciando as variáveis do `.env`**
+4. **Use interpolação no `compose.yml`, referenciando as variáveis do `.env`**
 
    ```yaml
    db:
@@ -304,7 +310,7 @@
        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
    ```
 
-4. **Compare com `env_file`, movendo as variáveis do `flask` para um arquivo dedicado**
+5. **Compare com `env_file`, movendo as variáveis do `flask` para um arquivo dedicado**
 
    ```bash
    cat <<EOF > contador/flask.env
@@ -320,7 +326,7 @@
        - contador/flask.env
    ```
 
-5. **Suba o ambiente e confira que as variáveis chegaram aos containers**
+6. **Suba o ambiente e confira que as variáveis chegaram aos containers**
 
    ```bash
    docker compose up -d
@@ -328,10 +334,10 @@
    docker compose exec db env | grep MYSQL_ROOT_PASSWORD
    ```
 
-6. **Teste um valor default com `${VAR:-default}`**
+7. **Teste um valor default com `${VAR:-default}`**
    - Remova `MYSQL_ROOT_PASSWORD` do `.env` e ajuste o compose para `${MYSQL_ROOT_PASSWORD:-senha-padrao}`. Suba novamente e confira qual senha foi usada.
 
-7. **Limpar o ambiente**
+8. **Limpar o ambiente**
 
    ```bash
    docker compose down --volumes
@@ -347,7 +353,7 @@
    cp -R ../lab4 ../lab5 && cd ../lab5
    ```
 
-2. **Renomeie o compose base e remova o que for específico de ambiente**
+2. **Remova do `compose.yml` o que for específico de ambiente**
    - Mantenha em `compose.yml` só o que é comum a todos os ambientes (build, rede, dependências).
 
 3. **Crie `compose.override.yml` para desenvolvimento** (é lido automaticamente junto ao `compose.yml`)
@@ -525,7 +531,7 @@
    docker compose up -d
    docker compose exec flask sh -c "kill 1"
    sleep 5
-   docker compose ps flask  # permanece parado
+   docker compose ps -a flask  # permanece parado
    ```
 
    A imagem `python:3.9-slim` usada pelo `flask` não tem o binário `kill` — por isso o comando roda via `sh -c`, usando o `kill` embutido do shell. Rodar `docker compose exec flask kill 1` diretamente falha com `executable file not found in $PATH`.
@@ -542,7 +548,7 @@
    docker compose up -d
    docker compose exec flask sh -c "kill 1"
    sleep 5
-   docker compose ps flask  # foi reiniciado
+   docker compose ps -a flask  # foi reiniciado
    ```
 
    Use `kill` (`SIGTERM`), não `kill -9` (`SIGKILL`): `SIGKILL` nunca pode ter um handler instalado (é uma regra do kernel, não uma questão de configuração), então ele **nunca** derruba o PID 1 de dentro do próprio namespace, mesmo com `tini` — nem com `init: true`. O `SIGTERM` funciona porque o `tini` sabe tratá-lo.

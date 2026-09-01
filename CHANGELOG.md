@@ -1,5 +1,21 @@
 # Change Log
 
+## v1.1.17 - 2026-09-01
+
+### Fixed
+
+unidade2.md (achados testando todos os labs com containers reais)
+
+- Lab 5, item "Compilar o gastador de recursos": `cd src` corrigido pra `cd /build` -- destino real do bind mount (`-v .:/build`); não existe `src/` na fixture, o `go build` falhava com "go.mod file not found".
+- Lab 5, item "Testando o limite de memória": flag `-memory-hog` corrigida pra `-hog-memory` (ordem certa da flag, confirmada no binário e no Lab 12, que já usava certo).
+- Lab 7, item "Acesse os dados de outro contêiner": container renomeado de `lab7_container_2` (mesmo nome já usado no item anterior, ainda vivo) pra `lab7_container_4` -- evita o conflito `Conflict. The container name "/lab7_container_2" is already in use`.
+
+unidade3.md (achados testando todos os labs com containers reais)
+
+- Lab 3, item 1: `cp -R lab2/{Dockerfile,html,contador,compose.yml}` corrigido -- `compose.yml` nunca existiu (os labs 1/2 usam `docker-compose.yml`) e faltava `nginx.conf` (que o Dockerfile do lab2 precisa) na lista. Sem isso, o `docker compose up --build` do lab3 falhava por completo.
+- Lab 4: adicionado o passo explícito `mv docker-compose.yml compose.yml` -- o texto já se referia ao arquivo como `compose.yml` a partir daqui (e o Lab 5 depende do nome oficial pro `-f compose.yml` explícito funcionar), mas nada renomeava de fato.
+- Lab 8, itens 2 e 3: `docker compose ps flask` trocado por `docker compose ps -a flask` -- sem `-a`, um container parado simplesmente não aparece na lista (fica vazia em vez de mostrar "Exited"), diferente do que o comentário do próprio comando sugere.
+
 ## v1.1.16 - 2026-09-01
 
 ### Fixed

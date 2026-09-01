@@ -248,7 +248,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
 
     ```bash
     docker run --rm -it -v .:/build golang
-    cd src
+    cd /build
     go build -o waste-resource
     ```
 
@@ -352,9 +352,9 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    3. No Terminal 1. Teste o limite de memória. O $? mostra a saída do último comando utilizado. o 137 é saída por oom-kill
 
        ```bash
-        ./waste-resource -memory-hog 1
+        ./waste-resource -hog-memory 1
         echo $?
-        ./waste-resource -memory-hog 3
+        ./waste-resource -hog-memory 3
         echo $?
         # saia do processo limitado
         exit
@@ -518,7 +518,7 @@ Você precisará de dois terminais. O primeiro na namespace de rede. o Segundo p
    ```
 
    ```bash
-   $ docker run --name lab7_container_2 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
+   $ docker run --name lab7_container_4 --mount source=lab7_volume_named,target=/data --mount source=lab7_volume_named2,target=/data2 --mount source=<<NOME_DO_VOLUME_UNNAMED>>,target=/data3 -v /data4 -it --rm busybox
    ```
 
    Dentro do container, acesse os dados dos três volumes montados:
