@@ -19,6 +19,8 @@
 2. **Criar um Arquivo Dockerfile:**
    - Dentro do diretório do projeto, crie um arquivo `Dockerfile` para o serviço `web`:
 
+   <!--arquivo:Dockerfile-->
+
    ```Dockerfile
    # Use a imagem base do Nginx
    FROM nginx:latest
@@ -37,6 +39,8 @@
 
 4. **Criar um Arquivo Docker Compose:**
    - Dentro do diretório do projeto, crie um arquivo `docker-compose.yml` com o seguinte conteúdo:
+
+   <!--arquivo:docker-compose.yml-->
 
    ```yaml
    version: '3.8'
